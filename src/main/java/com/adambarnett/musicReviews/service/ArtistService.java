@@ -2,72 +2,69 @@ package com.adambarnett.musicReviews.service;
 
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.dtos.ArtistDTO;
-import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ArtistService {
 
     private final ArtistRepository artistRepository;
-    private final AlbumRepository albumRepository;
 
 
-    public ArtistService(final ArtistRepository artistRepository, final AlbumRepository albumRepository, final AlbumService albumService) {
+    public ArtistService(final ArtistRepository artistRepository) {
         this.artistRepository = artistRepository;
-        this.albumRepository = albumRepository;
     }
 
-    //TODO Add an addToAlbumList to add albums in addition to what's currently there
-    // Returns list of albums without coupling Artist to Album
-    public List<String> getAlbumList(String artistName) {
-        List<Album> albumListTemp = albumRepository.findByArtist_ArtistName(artistName);
-        List<String> albumNameList = new ArrayList<>();
-        for (Album album : albumListTemp) {
-            albumNameList.add(album.getAlbumName());
-        }
-        return albumNameList;
+    public Artist getArtistByName(String artistName) {
+        Optional<Artist> artistOptional = artistRepository.findByArtistName(artistName);
+        if (!artistOptional.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
+        return artistOptional.get();
     }
 
-    public void addArtist(String artistName) {
-        Artist artist;
+    public Artist addArtist(String artistName) {
         Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistName);
-        if (!artistOptional.isPresent()) {
-            artist = new Artist();
-            artist.setArtistName(artistName);
+        if (artistOptional.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist already exists");
         }
-        else {
-            artist = artistOptional.get();
-        }
+        Artist artist = new Artist();
+        artist.setArtistName(artistName);
         artistRepository.save(artist);
         System.out.println("Entry successfully created for " + artistName);
+        return artist;
     }
 
-    //Returns ArtistDTO with artist name and list of albums
-    public ArtistDTO getArtistDetails(String artistName) {
-        Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistName);
-        if (!artistOptional.isPresent()) {
-            return null;
-        }
-        return new ArtistDTO(artistName, getAlbumList(artistName));
+    public Artist updateArtist(Long id, Artist updatedArtist) {
+        Optional<Artist> artistOptional = getArtistOptionalOrNotFound(id);
+        Artist artist = artistOptional.get();
+        artist.setArtistName(updatedArtist.getArtistName());
+        return artistRepository.save(artist);
     }
 
-    public void deleteArtist(String artistName) {
-        Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistName);
+    public Artist deleteArtist(Long id) {
+        Optional<Artist> artistOptional = getArtistOptionalOrNotFound(id);
+        Artist deletedArtist = artistOptional.get();
+        artistRepository.delete(deletedArtist);
+        return deletedArtist;
+    }
+
+    private Optional<Artist> getArtistOptionalOrNotFound(Long id) {
+        Optional<Artist> artistOptional = this.artistRepository.findById(id);
         if (!artistOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
         }
-        Artist artist = artistOptional.get();
-        artistRepository.delete(artist);
+        return artistOptional;
     }
 
-
+    public List<Album> getAlbumsByArtistName(String artistName) {
+        Artist artist = getArtistByName(artistName);
+        return artist.getAlbums();
+    }
 
 }

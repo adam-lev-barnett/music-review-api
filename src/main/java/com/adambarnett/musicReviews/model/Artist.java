@@ -5,7 +5,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 @Entity
 @Table(name="ARTIST")
@@ -18,8 +22,10 @@ public class Artist {
     @Column(name="ARTIST_NAME")
     @Getter @Setter(AccessLevel.PUBLIC) private String artistName;
 
-    // field in Album for artist name is "artist" not "artistName"
-    @OneToMany(mappedBy = "artist")
-    @Getter @Setter private List<Album> albums;
+    // Mapped by "artist" versus "artistName" because album refers to the artist object as a whole
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.REMOVE)
+    @Getter private List<Album> albums = new ArrayList<>();
+
+    //TODO add field for average score across albums
 
 }

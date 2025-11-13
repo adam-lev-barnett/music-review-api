@@ -22,4 +22,6 @@ public class Album {
     @Column(name="RELEASE_YEAR")
     @Getter @Setter private Integer releaseYear;
 
+    //TODO add field for average album score over reviews
+
 }

@@ -19,11 +19,11 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public List<Review> getReviewsByContributor(String contributorUsername) {
+    public List<Review> findReviewsByContributor(String contributorUsername) {
         return reviewRepository.findByContributor_Username(contributorUsername);
     }
 
-    public List<Review> getReviewsByArtistName(String artistName) {
+    public List<Review> findReviewsByArtistName(String artistName) {
         List<Review> reviews = reviewRepository.findByArtistName(artistName);
         return reviewRepository.findByArtistName(artistName);
     }

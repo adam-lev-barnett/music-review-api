@@ -1,7 +1,6 @@
 package com.adambarnett.musicReviews.repository;
 
 import com.adambarnett.musicReviews.model.Album;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

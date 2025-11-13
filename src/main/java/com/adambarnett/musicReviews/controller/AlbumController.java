@@ -2,9 +2,7 @@ package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.service.AlbumService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,21 +15,34 @@ public class AlbumController {
         this.albumService = albumService;
     }
 
-    @GetMapping("album/artist/{name}")
-    public List<Album> getAlbumsByArtist(@PathVariable("name") String artistName) {
+    @GetMapping("albums/artist/{artistName}")
+    public List<Album> getAlbumsByArtist(@PathVariable("artistName") String artistName) {
         return albumService.findByString(artistName, "artistName");
     }
 
-    @GetMapping("album/name/{name}")
-    public List<Album> getAlbumByAlbumName(@PathVariable("name") String albumName) {
-        return albumService.findByString(albumName, "name");
+    @GetMapping("albums/name/{albumName}")
+    public List<Album> getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
+        return albumService.findByString(albumName, "albumName");
     }
 
-    @GetMapping("album/year/{releaseYear}")
+    @GetMapping("albums/year/{releaseYear}")
     public List<Album> getAlbumsByReleaseYear(@PathVariable("releaseYear") Integer releaseYear) {
         return albumService.findByReleaseYear(releaseYear);
     }
 
+    @PostMapping("albums")
+    public Album addAlbum(@RequestBody Album album) {
+        return albumService.addAlbum(album);
+    }
 
+    @PutMapping("albums/{id}")
+    public Album updateAlbum(@PathVariable Long id, @RequestBody Album album) {
+        return albumService.updateAlbum(id, album);
+    }
+
+    @DeleteMapping("albums/{id}")
+    public Album deleteAlbum(@PathVariable Long id) {
+        return albumService.deleteAlbum(id);
+    }
 
 }
