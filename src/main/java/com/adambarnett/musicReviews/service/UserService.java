@@ -26,7 +26,7 @@ public class UserService {
         return new ContributorDTO(username, favoriteArist);
     }
 
-    public ContributorDTO updateContributorFavoriteArtist(String username, String favoriteArtist) throws InvalidUserException {
+    public Contributor updateContributorFavoriteArtist(String username, String favoriteArtist) throws InvalidUserException {
         Optional<Contributor> contributorOptional = contributorRepository.findByUsername(username);
         if (contributorOptional.isEmpty()) {
             throw new InvalidUserException("Cannot update contributor; contributor does not exist");
@@ -34,7 +34,7 @@ public class UserService {
         Contributor updatedContributor = contributorOptional.get();
         updatedContributor.setFavoriteArtist(favoriteArtist);
         System.out.println("Contributor artist successfully updated");
-        return new ContributorDTO(username, favoriteArtist);
+        return contributorRepository.save(updatedContributor);
     }
 
 }

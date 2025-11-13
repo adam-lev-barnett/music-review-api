@@ -1,5 +1,6 @@
 package com.adambarnett.musicReviews.model;
 
+import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,5 +28,24 @@ public class Artist {
     @Getter private List<Album> albums = new ArrayList<>();
 
     //TODO add field for average score across albums
+
+    public void addAlbum(Album album) throws InvalidArgumentException {
+        if (album == null) {
+            throw new InvalidArgumentException("Album cannot be null");
+        }
+        albums.add(album);
+    }
+
+    public void removeAlbum(Album album) throws InvalidArgumentException {
+        if (album == null) {
+            throw new InvalidArgumentException("Album cannot be null");
+        }
+        if (albums.contains(album)) {
+            albums.remove(album);
+        }
+        else {
+            throw new InvalidArgumentException("Album does not exist");
+        }
+    }
 
 }

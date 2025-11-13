@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.security.InvalidParameterException;
+
 // A review is submitted by a contributor for a specific album
 // An album can access its reviews through this table
 
@@ -25,7 +27,7 @@ public class Review {
     @Getter @Setter private Album album;
 
     @Column(name="SCORE")
-    @Getter @Setter private Integer score;
+    @Getter private Integer score;
 
     @Column(name="COMMENTS")
     @Getter @Setter private String comments;
@@ -35,5 +37,20 @@ public class Review {
     @Getter @Setter private Contributor contributor;
 
     @Getter @Setter private ReviewStatus reviewStatus;
+
+    public void setScore(Integer score) {
+        if (score <= 0 || score > 100) {
+            throw new IllegalArgumentException("Score must be between 0 and 100");
+        }
+        this.score = score;
+    }
+
+    public Album setAlbum(Album album) {
+        if (album == null) {
+            throw new InvalidParameterException("Album can't be null");
+        }
+        this.album = album;
+        return album;
+    }
 
 }

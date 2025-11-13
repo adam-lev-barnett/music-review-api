@@ -1,5 +1,6 @@
 package com.adambarnett.musicReviews.controller;
 
+import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.service.AlbumService;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +18,12 @@ public class AlbumController {
 
     @GetMapping("albums/artist/{artistName}")
     public List<Album> getAlbumsByArtist(@PathVariable("artistName") String artistName) {
-        return albumService.findByString(artistName, "artistName");
+        return albumService.findByArtistName(artistName);
     }
 
     @GetMapping("albums/name/{albumName}")
-    public List<Album> getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
-        return albumService.findByString(albumName, "albumName");
+    public Album getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
+        return albumService.getAlbumByAlbumName(albumName);
     }
 
     @GetMapping("albums/year/{releaseYear}")
@@ -31,7 +32,7 @@ public class AlbumController {
     }
 
     @PostMapping("albums")
-    public Album addAlbum(@RequestBody Album album) {
+    public Album addAlbum(@RequestBody Album album) throws InvalidArgumentException {
         return albumService.addAlbum(album);
     }
 
