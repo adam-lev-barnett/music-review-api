@@ -10,13 +10,13 @@ import java.util.Optional;
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-    List<AlbumDTO> findByArtist_ArtistName(String artistName);
+    List<Album> findByArtist_ArtistName(String artistName);
 
-    List<AlbumDTO> findByReleaseYear(Integer releaseYear);
+    List<Album> findByReleaseYear(Integer releaseYear);
 
-    Optional<AlbumDTO> findByAlbumName(String albumName);
+    Optional<Album> findByAlbumName(String albumName);
 
-    Optional<AlbumDTO> findByAlbumNameAndArtist_ArtistName(String albumName, String artistName);
+    Optional<Album> findByAlbumNameAndArtist_ArtistName(String albumName, String artistName);
 
 
     }

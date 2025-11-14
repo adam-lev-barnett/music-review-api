@@ -2,6 +2,7 @@ package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
+import com.adambarnett.musicReviews.model.dtos.AlbumDTO;
 import com.adambarnett.musicReviews.service.AlbumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AlbumController {
     }
 
     @GetMapping("albums/{albumName}/{artistName}")
-    public Album getAlbumByAlbumNameAndArtistName(@PathVariable("albumName") String albumName, @PathVariable("artistName") String artistName) {
+    public AlbumDTO getAlbumByAlbumNameAndArtistName(@PathVariable("albumName") String albumName, @PathVariable("artistName") String artistName) {
         return albumService.findByAlbumNameAndArtistName(albumName, artistName);
     }
 
@@ -35,17 +36,17 @@ public class AlbumController {
     }
 
     @PostMapping("albums")
-    public Album addAlbum(@RequestBody Album album) throws InvalidArgumentException {
-        return albumService.addAlbum(album);
+    public AlbumDTO addAlbum(@RequestBody AlbumDTO albumDTO) throws InvalidArgumentException {
+        return albumService.addAlbum(albumDTO);
     }
 
     @PutMapping("albums/{id}")
-    public Album updateAlbum(@PathVariable Long id, @RequestBody Album album) {
-        return albumService.updateAlbum(id, album);
+    public AlbumDTO updateAlbum(@PathVariable Long id, @RequestBody AlbumDTO albumDTO) {
+        return albumService.updateAlbum(albumDTO);
     }
 
     @DeleteMapping("albums/{id}")
-    public Album deleteAlbum(@PathVariable Long id) {
+    public AlbumDTO deleteAlbum(@PathVariable Long id) {
         return albumService.deleteAlbum(id);
     }
 
