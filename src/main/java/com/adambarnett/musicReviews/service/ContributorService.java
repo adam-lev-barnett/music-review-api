@@ -3,18 +3,16 @@ package com.adambarnett.musicReviews.service;
 import com.adambarnett.musicReviews.exception.InvalidUserException;
 import com.adambarnett.musicReviews.model.Contributor;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ContributorService {
 
     private final ContributorRepository contributorRepository;
-
-    public ContributorService(ContributorRepository contributorRepository) {
-        this.contributorRepository = contributorRepository;
-    }
 
     public Contributor registerNewContributor(String username, String favoriteArist) throws InvalidUserException {
         Optional<Contributor> contributorOptional = contributorRepository.findByUsername(username);

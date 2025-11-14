@@ -1,9 +1,12 @@
 package com.adambarnett.musicReviews.model.dtos;
 
 import com.adambarnett.musicReviews.model.Review;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-// Album doesn't have a review list field to decouple it; review list is pulled from Review.findByAlbum()
-public record AlbumDTO(String title, String artist, String releaseYear, List<Review> reviews) {
+public record AlbumDTO(@NotNull String title,
+                       @NotNull String artist,
+                       @NotNull String releaseYear,
+                       List<Review> reviews) {
 }

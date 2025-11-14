@@ -1,6 +1,7 @@
 package com.adambarnett.musicReviews.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,13 +13,16 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter private Long id;
 
+    @NotNull
     @Column(name="ALBUM_NAME")
     @Getter @Setter private String albumName;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="ARTIST_ID")
     @Getter @Setter private Artist artist;
 
+    @NotNull
     @Column(name="RELEASE_YEAR")
     @Getter @Setter private Integer releaseYear;
 

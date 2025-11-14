@@ -2,6 +2,7 @@ package com.adambarnett.musicReviews.model;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter private long id;
 
+    @NotNull
     @Column(name="ARTIST_NAME")
     @Getter @Setter(AccessLevel.PUBLIC) private String artistName;
 

@@ -8,6 +8,7 @@ import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
 import com.adambarnett.musicReviews.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,19 +18,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
     private final ContributorRepository contributorRepository;
-
-    public ReviewService(ReviewRepository reviewRepository, AlbumRepository albumRepository, ArtistRepository artistRepository, ContributorRepository contributorRepository) {
-        this.reviewRepository = reviewRepository;
-        this.albumRepository = albumRepository;
-        this.artistRepository = artistRepository;
-        this.contributorRepository = contributorRepository;
-    }
 
     public Review addReview(Review review) {
         if (review == null) {
@@ -127,5 +122,7 @@ public class ReviewService {
         return albumRepository.save(newAlbum);
 
     }
+
+
 
 }

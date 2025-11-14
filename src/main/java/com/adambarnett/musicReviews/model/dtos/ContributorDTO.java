@@ -1,5 +1,8 @@
 package com.adambarnett.musicReviews.model.dtos;
 
-public record ContributorDTO(String name, String favoriteArist) {
+import jakarta.validation.constraints.NotNull;
+
+public record ContributorDTO(@NotNull String name,
+                             String favoriteArist) {
 
 }

@@ -3,27 +3,25 @@ package com.adambarnett.musicReviews.controller;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.service.AlbumService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class AlbumController {
 
     private final AlbumService albumService;
-
-    public AlbumController(final AlbumService albumService) {
-        this.albumService = albumService;
-    }
 
     @GetMapping("albums/artist/{artistName}")
     public List<Album> getAlbumsByArtist(@PathVariable("artistName") String artistName) {
         return albumService.findByArtistName(artistName);
     }
 
-    @GetMapping("albums/name/{albumName}")
-    public Album getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
-        return albumService.getAlbumByAlbumName(albumName);
+    @GetMapping("albums/{albumName}/{artistName}")
+    public Album getAlbumByAlbumNameAndArtistName(@PathVariable("albumName") String albumName, @PathVariable("artistName") String artistName) {
+        return albumService.findByAlbumNameAndArtistName(albumName, artistName);
     }
 
     @GetMapping("albums/year/{releaseYear}")

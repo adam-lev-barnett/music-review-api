@@ -3,18 +3,17 @@ package com.adambarnett.musicReviews.controller;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.service.ArtistService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ArtistController {
 
     private final ArtistService artistService;
 
-    public ArtistController(ArtistService artistService) {
-        this.artistService = artistService;
-    }
 
     @GetMapping("artists/{artistName}")
     public Artist getArtistByName(@PathVariable String artistName) {

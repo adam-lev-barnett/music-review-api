@@ -4,6 +4,7 @@ import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,22 +13,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ArtistService {
 
     private final ArtistRepository artistRepository;
 
-
-    public ArtistService(final ArtistRepository artistRepository) {
-        this.artistRepository = artistRepository;
-    }
-
-    public Artist getArtistByName(String artistName) {
+    public Artist getArtistByName(String artistName) throws ResponseStatusException {
         Optional<Artist> artistOptional = artistRepository.findByArtistName(artistName);
         if (!artistOptional.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
         return artistOptional.get();
     }
 
-    public Artist addArtist(String artistName) {
+    public Artist addArtist(String artistName) throws ResponseStatusException {
         Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistName);
         if (artistOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist already exists");
@@ -39,14 +36,14 @@ public class ArtistService {
         return artist;
     }
 
-    public Artist updateArtist(Long id, Artist updatedArtist) {
+    public Artist updateArtist(Long id, Artist updatedArtist) throws ResponseStatusException {
         Optional<Artist> artistOptional = getArtistOptionalOrNotFound(id);
         Artist artist = artistOptional.get();
         artist.setArtistName(updatedArtist.getArtistName());
         return artistRepository.save(artist);
     }
 
-    public Artist deleteArtist(Long id) {
+    public Artist deleteArtist(Long id) throws ResponseStatusException {
         Optional<Artist> artistOptional = getArtistOptionalOrNotFound(id);
         Artist deletedArtist = artistOptional.get();
         artistRepository.delete(deletedArtist);

@@ -1,8 +1,8 @@
 package com.adambarnett.musicReviews.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Entity
@@ -14,7 +14,7 @@ public class Contributor {
     @Getter private Long id;
 
     @Column(name="USERNAME")
-    @NonNull
+    @NotNull
     @Getter @Setter private String username;
 
     @Getter @Setter private String favoriteArtist;

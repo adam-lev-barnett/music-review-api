@@ -2,18 +2,16 @@ package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.model.Review;
 import com.adambarnett.musicReviews.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewService reviewService;
-
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     @GetMapping("reviews")
     public List<Review> getReviews() {
@@ -59,4 +57,5 @@ public class ReviewController {
     public Review createReview(@RequestBody Review review) {
         return reviewService.addReview(review);
     }
+
 }

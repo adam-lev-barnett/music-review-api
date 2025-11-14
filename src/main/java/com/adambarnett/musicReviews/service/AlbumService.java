@@ -3,9 +3,11 @@ package com.adambarnett.musicReviews.service;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
+import com.adambarnett.musicReviews.model.dtos.AlbumDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,16 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AlbumService {
 
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
-
-
-    public AlbumService(AlbumRepository albumRepository, ArtistRepository artistRepository) {
-        this.albumRepository = albumRepository;
-        this.artistRepository = artistRepository;
-    }
 
     // If artist doesn't exist, add it to the artist repository
     public Album addAlbum(Album newAlbum) throws InvalidArgumentException {
@@ -108,4 +105,5 @@ public class AlbumService {
         return albumRepository.findByAlbumName(albumName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find album with name: " + albumName));
     }
+
 }
