@@ -1,5 +1,6 @@
 package com.adambarnett.musicReviews.controller;
 
+import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Review;
 import com.adambarnett.musicReviews.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class ReviewController {
     }
 
     @PostMapping("reviews")
-    public Review createReview(@RequestBody Review review) {
+    public Review createReview(@RequestBody Review review) throws InvalidArgumentException {
         return reviewService.addReview(review);
     }
 

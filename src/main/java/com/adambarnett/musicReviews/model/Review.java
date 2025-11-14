@@ -41,6 +41,7 @@ public class Review {
     @JoinColumn(name="CONTRIBUTOR_ID")
     @Getter @Setter private Contributor contributor;
 
+    @Enumerated(EnumType.STRING)
     @Getter @Setter private ReviewStatus reviewStatus;
 
     public void setScore(Integer score) throws InvalidArgumentException {

@@ -28,4 +28,8 @@ public class Album {
 
     //TODO add field for average album score over reviews
 
+    @Override
+    public String toString() {
+        return String.format("Album: %s\nRelease year: %d\n", albumName, releaseYear);
+    }
 }

@@ -1,5 +1,6 @@
 package com.adambarnett.musicReviews.service;
 
+import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
@@ -26,7 +27,7 @@ public class ReviewService {
     private final ArtistRepository artistRepository;
     private final ContributorRepository contributorRepository;
 
-    public Review addReview(Review review) {
+    public Review addReview(Review review) throws InvalidArgumentException {
         if (review == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Review is null");
         }
