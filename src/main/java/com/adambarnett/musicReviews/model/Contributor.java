@@ -17,7 +17,6 @@ public class Contributor {
     @NonNull
     @Getter @Setter private String username;
 
-    @JoinColumn(name="FAVORITE_ARTIST")
     @Getter @Setter private String favoriteArtist;
 
 

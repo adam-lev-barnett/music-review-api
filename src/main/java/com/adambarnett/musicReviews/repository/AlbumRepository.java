@@ -2,10 +2,12 @@ package com.adambarnett.musicReviews.repository;
 
 import com.adambarnett.musicReviews.model.Album;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     List<Album> findByArtist_ArtistName(String artistName);
@@ -13,9 +15,8 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     List<Album> findByReleaseYear(Integer releaseYear);
 
     Optional<Album> findByAlbumName(String albumName);
-    
-    boolean existsByAlbumName(String albumName);
 
     Optional<Album> findByAlbumNameAndArtist_ArtistName(String albumName, String artistName);
+
 
     }

@@ -1,0 +1,62 @@
+package com.adambarnett.musicReviews.controller;
+
+import com.adambarnett.musicReviews.model.Review;
+import com.adambarnett.musicReviews.service.ReviewService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class ReviewController {
+
+    private final ReviewService reviewService;
+
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
+
+    @GetMapping("reviews")
+    public List<Review> getReviews() {
+        return reviewService.getReviews();
+    }
+
+    @GetMapping("reviews/artist/{artistName}")
+    public List<Review> getReviewsByArtist(@PathVariable("artistName") String artistName) {
+        return reviewService.findByArtistName(artistName);
+    }
+
+    @GetMapping("reviews/albums/{albumName}")
+    public List<Review> getReviewsByAlbumName(@PathVariable("albumName") String albumName) {
+        return reviewService.findByAlbumName(albumName);
+    }
+
+    @GetMapping("reviews/{artist}/{album}")
+    public List<Review> getReviewsByAlbum(@PathVariable("artist") String artist, @PathVariable("album") String album) {
+        return  reviewService.findByArtistNameAndAlbumName(artist, album);
+    }
+
+    @GetMapping("reviews/contributors/{username}")
+    public List<Review> getReviewsByContributor(@PathVariable("username") String username) {
+        return reviewService.findByContributor(username);
+    }
+
+    @GetMapping("reviews/score/{score}")
+    public List<Review> getReviewsByScore(@PathVariable("score") Integer score) {
+        return reviewService.findByScore(score);
+    }
+
+    @GetMapping("reviews/score/greaterthan/{score}")
+    public List<Review> getReviewsByScoreGreaterThan(@PathVariable("score") Integer score) {
+        return reviewService.findByScoreGreaterThan(score);
+    }
+
+    @GetMapping("reviews/score/lessthan/{score}")
+    public List<Review> getReviewsByScoreLessThan(@PathVariable("score") Integer score) {
+        return reviewService.findByScoreLessThan(score);
+    }
+
+    @PostMapping("reviews")
+    public Review createReview(@RequestBody Review review) {
+        return reviewService.addReview(review);
+    }
+}

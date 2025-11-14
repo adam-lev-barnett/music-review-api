@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 
 @Entity
 @Table(name="ARTIST")
@@ -34,18 +31,6 @@ public class Artist {
             throw new InvalidArgumentException("Album cannot be null");
         }
         albums.add(album);
-    }
-
-    public void removeAlbum(Album album) throws InvalidArgumentException {
-        if (album == null) {
-            throw new InvalidArgumentException("Album cannot be null");
-        }
-        if (albums.contains(album)) {
-            albums.remove(album);
-        }
-        else {
-            throw new InvalidArgumentException("Album does not exist");
-        }
     }
 
 }

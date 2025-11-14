@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface ContributorRepository extends JpaRepository<Contributor, Long> {
 
     Optional<Contributor> findByUsername(String name);
-    Optional<Contributor> findByFavoriteArtist(String favoriteArtist);
 }

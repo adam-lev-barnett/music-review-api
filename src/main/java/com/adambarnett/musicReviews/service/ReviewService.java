@@ -55,7 +55,7 @@ public class ReviewService {
     public List<Review> getReviews() {
         return reviewRepository.findAll(
                 Sort.by("artist.artistName").ascending()
-                        .and(Sort.by("album.releaseDate").ascending())
+                        .and(Sort.by("album.releaseYear").ascending())
         );
     }
 
@@ -63,19 +63,19 @@ public class ReviewService {
     public List<Review> findByContributor(String username) {
         Contributor contributor = contributorRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return reviewRepository.findByContributor_Username(username);
+        return reviewRepository.findByContributor_Username(contributor.getUsername());
     }
 
     public List<Review> findByArtistName(String artistName) {
         Artist artist = artistRepository.findByArtistName(artistName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
-        return reviewRepository.findByArtist_ArtistName(artistName);
+        return reviewRepository.findByArtist_ArtistName(artist.getArtistName());
     }
 
     public List<Review> findByAlbumName(String albumName) {
         Album album = albumRepository.findByAlbumName(albumName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found"));
-        return reviewRepository.findByAlbum_AlbumName(albumName);
+        return reviewRepository.findByAlbum_AlbumName(album.getAlbumName());
     }
 
     // If someone is looking for a specific album; can't just be by album name because multiple albums can be named the same thing
@@ -84,7 +84,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
         Album album = albumRepository.findByAlbumName(albumName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found"));
-        return reviewRepository.findByArtist_ArtistNameAndAlbum_AlbumName(artistName, albumName);
+        return reviewRepository.findByArtist_ArtistNameAndAlbum_AlbumName(artist.getArtistName(), album.getAlbumName());
     }
 
     public List<Review> findByScore(Integer score) {

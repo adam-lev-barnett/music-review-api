@@ -31,6 +31,11 @@ public class AlbumController {
         return albumService.findByReleaseYear(releaseYear);
     }
 
+    @GetMapping("albums/sort/{sortBy}")
+    public List<Album> sortAllAlbums(@PathVariable("sortBy") String sortBy) {
+        return albumService.sortAll(sortBy);
+    }
+
     @PostMapping("albums")
     public Album addAlbum(@RequestBody Album album) throws InvalidArgumentException {
         return albumService.addAlbum(album);

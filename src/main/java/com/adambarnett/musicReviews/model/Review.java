@@ -45,12 +45,11 @@ public class Review {
         this.score = score;
     }
 
-    public Album setAlbum(Album album) {
+    public void setAlbum(Album album) {
         if (album == null) {
             throw new InvalidParameterException("Album can't be null");
         }
         this.album = album;
-        return album;
     }
 
 }

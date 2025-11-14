@@ -37,8 +37,8 @@ public class AlbumService {
                     System.out.println("Artist does not exist in database. Adding artist: " + artistName);
                     return artistRepository.save(newArtist);
                 });
-        artist.addAlbum(newAlbum);
         albumRepository.save(newAlbum);
+        artist.addAlbum(newAlbum);
         System.out.println("Successfully added album " + newAlbum.getAlbumName() + " by " + newAlbum.getArtist().getArtistName() + " to database.");
         return newAlbum;
     }
@@ -103,7 +103,6 @@ public class AlbumService {
                 return albumRepository.findAll(Sort.by(Sort.Direction.ASC, "albumName"));
         }
     }
-
 
     public Album getAlbumByAlbumName(String albumName) {
         return albumRepository.findByAlbumName(albumName)
