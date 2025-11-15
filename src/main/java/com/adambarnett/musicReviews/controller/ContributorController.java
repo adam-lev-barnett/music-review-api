@@ -18,7 +18,7 @@ public class ContributorController {
 
     @PostMapping("contributors/register/{newUser}")
     public Contributor registerContributor(@PathVariable("newUser") String newUser) throws InvalidUserException {
-        contributorService.registerNewContributor(newUser);
+        return contributorService.registerNewContributor(newUser);
     }
 
 

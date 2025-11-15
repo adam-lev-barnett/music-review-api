@@ -1,6 +1,7 @@
 package com.adambarnett.musicReviews.model;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -24,6 +25,7 @@ public class Artist {
 
     // Mapped by "artist" versus "artistName" because album refers to the artist object as a whole
     @OneToMany(mappedBy = "artist", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     @Getter private List<Album> albums = new ArrayList<>();
 
     //TODO add field for average score across albums

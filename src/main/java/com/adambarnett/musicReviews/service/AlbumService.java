@@ -34,10 +34,17 @@ public class AlbumService {
                     System.out.println("Artist does not exist in database. Adding artist: " + artistName);
                     return artistRepository.save(newArtist);
                 });
-        albumRepository.save(newAlbum);
-        artist.addAlbum(newAlbum);
+        Album album = albumRepository.findByAlbumNameAndArtist_ArtistName(newAlbum.getAlbumName(), artistName)
+                .orElseGet(() -> {
+                    Album createAlbum = new Album();
+                    createAlbum.setAlbumName(newAlbum.getAlbumName());
+                    createAlbum.setArtist(artist);
+                    createAlbum.setReleaseYear(newAlbum.getReleaseYear());
+                    return albumRepository.save(createAlbum);
+                });
+        artist.addAlbum(album);
         System.out.println("Successfully added album " + newAlbum.getAlbumName() + " by " + newAlbum.getArtist().getArtistName() + " to database.");
-        return newAlbum;
+        return album;
     }
 
     public Album updateAlbum(Long id, Album toUpdate) {

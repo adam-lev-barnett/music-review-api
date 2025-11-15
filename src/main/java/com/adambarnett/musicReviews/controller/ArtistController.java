@@ -25,6 +25,11 @@ public class ArtistController {
         return artistService.getAlbumsByArtistName(artistName);
     }
 
+    @GetMapping("artists")
+    public List<Artist> getArtists() {
+        return artistService.getArtists();
+    }
+
     @PostMapping("artists")
     public Artist saveArtist(@RequestBody Artist artist) {
         artistService.addArtist(artist.getArtistName());

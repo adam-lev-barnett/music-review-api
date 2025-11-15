@@ -2,7 +2,6 @@ package com.adambarnett.musicReviews.service;
 
 import com.adambarnett.musicReviews.exception.InvalidUserException;
 import com.adambarnett.musicReviews.model.Contributor;
-import com.adambarnett.musicReviews.model.dtos.UserDTO;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +19,7 @@ public class ContributorService {
         if (contributorOptional.isPresent()) throw new InvalidUserException("Cannot register new contributor; contributor already exists");
         Contributor newContributor = new Contributor();
         System.out.println("Contributor successfully registered");
-        contributorRepository.save(newContributor);
-        return new UserDTO(newContributor);
+        return contributorRepository.save(newContributor);
     }
 
     public Contributor updateContributorFavoriteArtist(String username, String favoriteArtist) throws InvalidUserException {

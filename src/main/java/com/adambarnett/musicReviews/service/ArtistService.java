@@ -5,6 +5,7 @@ import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -61,6 +62,10 @@ public class ArtistService {
     public List<Album> getAlbumsByArtistName(String artistName) {
         Artist artist = getArtistByName(artistName);
         return artist.getAlbums();
+    }
+
+    public List<Artist> getArtists() {
+        return this.artistRepository.findAll(Sort.by(Sort.Direction.ASC, "artistName"));
     }
 
 }
