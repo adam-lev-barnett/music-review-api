@@ -3,7 +3,8 @@ package com.adambarnett.musicReviews.service;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.dtos.AlbumDTO;
+import com.adambarnett.musicReviews.model.dtos.albumdata.RequestAlbumDTO;
+import com.adambarnett.musicReviews.model.dtos.albumdata.ResponseAlbumDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +26,9 @@ public class AlbumService {
     private final ArtistRepository artistRepository;
 
     // If artist doesn't exist, add it to the artist repository
-    public Album addAlbum(Album newAlbum) throws InvalidArgumentException {
+    public ResponseAlbumDTO addAlbum(RequestAlbumDTO newAlbum) throws InvalidArgumentException {
         //TODO avoid duplicates and ignore case
-        String artistName = newAlbum.getArtist().getArtistName();
+        String artistName = newAlbum.artistName();
         Artist artist = artistRepository.findByArtistName(artistName)
                 .orElseGet(() -> {
                     Artist newArtist = new Artist();
@@ -34,38 +36,39 @@ public class AlbumService {
                     System.out.println("Artist does not exist in database. Adding artist: " + artistName);
                     return artistRepository.save(newArtist);
                 });
-        Album album = albumRepository.findByAlbumNameAndArtist_ArtistName(newAlbum.getAlbumName(), artistName)
+        Album album = albumRepository.findByAlbumNameAndArtist_ArtistName(newAlbum.albumName(), artistName)
                 .orElseGet(() -> {
                     Album createAlbum = new Album();
-                    createAlbum.setAlbumName(newAlbum.getAlbumName());
+                    createAlbum.setAlbumName(newAlbum.albumName());
                     createAlbum.setArtist(artist);
-                    createAlbum.setReleaseYear(newAlbum.getReleaseYear());
+                    createAlbum.setReleaseYear(newAlbum.releaseYear());
                     return albumRepository.save(createAlbum);
                 });
         artist.addAlbum(album);
-        System.out.println("Successfully added album " + newAlbum.getAlbumName() + " by " + newAlbum.getArtist().getArtistName() + " to database.");
-        return album;
+        System.out.println("Successfully added album " + newAlbum.albumName() + " by " + newAlbum.artistName() + " to database.");
+        return new ResponseAlbumDTO(album);
     }
 
-    public Album updateAlbum(Long id, Album toUpdate) {
+    public ResponseAlbumDTO updateAlbum(Long id, RequestAlbumDTO toUpdate) {
         Optional<Album> albumOptional = albumRepository.findById(id);
         if (!albumOptional.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot update album. Album not found");
         Album existingAlbum = albumOptional.get();
-        existingAlbum.setAlbumName(toUpdate.getAlbumName());
-        existingAlbum.setReleaseYear(toUpdate.getReleaseYear());
-        Artist artistUpdate = artistRepository.findById(toUpdate.getArtist().getId())
+        existingAlbum.setAlbumName(toUpdate.albumName());
+        existingAlbum.setReleaseYear(toUpdate.releaseYear());
+        Artist artistUpdate = artistRepository.findByArtistName(toUpdate.artistName())
                 .orElseGet(() -> {
                     Artist newArtist = new Artist();
-                    newArtist.setArtistName(toUpdate.getArtist().getArtistName());
+                    newArtist.setArtistName(toUpdate.artistName());
                     return artistRepository.save(newArtist);
                 });
 
+        // Wait until the artist is actually updated.
         existingAlbum.setArtist(artistUpdate);
 
-        return albumRepository.save(existingAlbum);
+        return new ResponseAlbumDTO(albumRepository.save(existingAlbum));
     }
 
-    public Album deleteAlbum(Long id) {
+    public ResponseAlbumDTO deleteAlbum(Long id) {
         Optional<Album> albumOptional = albumRepository.findById(id);
         if (albumOptional.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot delete album. Album not found");
         Album deletedAlbum = albumOptional.get();
@@ -75,42 +78,54 @@ public class AlbumService {
             artist.getAlbums().remove(deletedAlbum);
         }
         albumRepository.delete(deletedAlbum);
-        return deletedAlbum;
+        return new ResponseAlbumDTO(deletedAlbum);
     }
 
-    public List<Album> findByArtistName(String artistName) {
-        return albumRepository.findByArtist_ArtistName(artistName);
+    public List<ResponseAlbumDTO> findByArtistName(String artistName) {
+        List<ResponseAlbumDTO> albumDtos = new ArrayList<>();
+        for (Album album : albumRepository.findByArtist_ArtistName(artistName)) {
+            albumDtos.add(new ResponseAlbumDTO(album));
+        }
+        return albumDtos;
     }
 
-    public Album findByAlbumNameAndArtistName(String albumName, String artistName) {
-        return albumRepository.findByAlbumNameAndArtist_ArtistName(albumName, artistName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist and album: " + artistName + " and " + albumName));
+    public ResponseAlbumDTO findByAlbumNameAndArtistName(String albumName, String artistName) {
+        return new ResponseAlbumDTO(albumRepository.findByAlbumNameAndArtist_ArtistName(albumName, artistName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist and album: " + artistName + " and " + albumName)));
     }
 
-    public List<Album> findByReleaseYear(Integer releaseYear) {
+    public List<ResponseAlbumDTO> findByReleaseYear(Integer releaseYear) {
 
         List<Album> albumsByYear = albumRepository.findByReleaseYear(releaseYear);
         if (albumsByYear.isEmpty()) {
             System.err.println("No albums found for given year.");
         }
-        return albumsByYear;
+        return convertToResponseAlbumDTOList(albumsByYear);
     }
 
-    public List<Album> sortAll(String sort) {
+    public List<ResponseAlbumDTO> sortAll(String sort) {
         switch (sort) {
             case "artistName":
-                return albumRepository.findAll(Sort.by(Sort.Direction.ASC, "artist.artistName"));
+                return convertToResponseAlbumDTOList(albumRepository.findAll(Sort.by(Sort.Direction.ASC, "artist.artistName")));
             case "releaseYear":
-                return albumRepository.findAll(Sort.by(Sort.Direction.ASC, "releaseYear"));
+                return convertToResponseAlbumDTOList(albumRepository.findAll(Sort.by(Sort.Direction.ASC, "releaseYear")));
             //TODO add sort by average score
             default:
-                return albumRepository.findAll(Sort.by(Sort.Direction.ASC, "albumName"));
+                return convertToResponseAlbumDTOList(albumRepository.findAll(Sort.by(Sort.Direction.ASC, "albumName")));
         }
     }
 
-    public Album getAlbumByAlbumName(String albumName) {
-        return albumRepository.findByAlbumName(albumName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find album with name: " + albumName));
+    public ResponseAlbumDTO getAlbumByAlbumName(String albumName) {
+        return new ResponseAlbumDTO(albumRepository.findByAlbumName(albumName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find album with name: " + albumName)));
+    }
+
+    private List<ResponseAlbumDTO> convertToResponseAlbumDTOList(List<Album> albums) {
+        List<ResponseAlbumDTO> responseAlbumDTOs = new ArrayList<>();
+        for (Album album : albums) {
+            responseAlbumDTOs.add(new ResponseAlbumDTO(album));
+        }
+        return responseAlbumDTOs;
     }
 
 }

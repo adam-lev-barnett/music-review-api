@@ -2,6 +2,7 @@ package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
+import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
 import com.adambarnett.musicReviews.service.ArtistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import java.util.List;
 public class ArtistController {
 
     private final ArtistService artistService;
-
 
     @GetMapping("artists/{artistName}")
     public Artist getArtistByName(@PathVariable String artistName) {
@@ -31,9 +31,8 @@ public class ArtistController {
     }
 
     @PostMapping("artists")
-    public Artist saveArtist(@RequestBody Artist artist) {
-        artistService.addArtist(artist.getArtistName());
-        return artist;
+    public ResponseArtistDTO saveArtist(@RequestBody ResponseArtistDTO responseArtistDto) {
+        return artistService.addArtist(responseArtistDto.artistName());
     }
 
     @PutMapping("artists")

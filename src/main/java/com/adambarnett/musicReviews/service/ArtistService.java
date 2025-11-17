@@ -2,6 +2,7 @@ package com.adambarnett.musicReviews.service;
 
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
+import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ArtistService {
         return artistOptional.get();
     }
 
-    public Artist addArtist(String artistName) throws ResponseStatusException {
+    public ResponseArtistDTO addArtist(String artistName) throws ResponseStatusException {
         Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistName);
         if (artistOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist already exists");
@@ -34,7 +35,7 @@ public class ArtistService {
         artist.setArtistName(artistName);
         artistRepository.save(artist);
         System.out.println("Entry successfully created for " + artistName);
-        return artist;
+        return new ResponseArtistDTO(artist);
     }
 
     public Artist updateArtist(Long id, Artist updatedArtist) throws ResponseStatusException {

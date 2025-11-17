@@ -18,5 +18,4 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     Optional<Album> findByAlbumNameAndArtist_ArtistName(String albumName, String artistName);
 
-
     }
