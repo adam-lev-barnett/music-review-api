@@ -3,7 +3,7 @@ package com.adambarnett.musicReviews.model.dtos.contributordata;
 import com.adambarnett.musicReviews.model.Contributor;
 
 public record ResponseContributorDTO(Long id,
-                                     String userName,
+                                     String username,
                                      String favoriteArtistName) {
 
     public ResponseContributorDTO(Contributor contributor) {

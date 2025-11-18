@@ -33,7 +33,6 @@ public class ContributorService {
         newContributor.setFavoriteArtist(favoriteArtist);
         System.out.println("Contributor successfully registered");
         Contributor registeredContributor = contributorRepository.save(newContributor);
-        if (favoriteArtist != null && !favoriteArtistName.isEmpty()) favoriteArtist.addFavoritedBy(registeredContributor);
         return new ResponseContributorDTO(registeredContributor);
     }
 
