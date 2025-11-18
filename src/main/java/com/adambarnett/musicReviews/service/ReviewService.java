@@ -39,7 +39,7 @@ public class ReviewService {
                 .orElseGet(Contributor::new);
         
         // Check if we need to add a new artist to the repository
-        Artist reviewedArtist = createArtistFromReview(reviewDTO);
+        Artist reviewedArtist = createArtistFromReview(reviewDTO.artistName());
         newReview.setArtist(reviewedArtist);
         
         // Check if we need to add a new album to the repository
@@ -100,7 +100,7 @@ public class ReviewService {
         return reviewRepository.findByScoreLessThan(score);
     }
 
-    private ResponseArtistDTO createArtistFromReview(String artistName) {
+    private Artist createArtistFromReview(String artistName) {
         Artist returnArtist = artistRepository.findByArtistName(artistName)
                 .orElseGet(() -> {
                     Artist newArtist = new Artist();
@@ -108,11 +108,11 @@ public class ReviewService {
                     System.out.println("New artist was created: " + newArtist.getArtistName());
                     return newArtist;
                 });
-        return new ResponseArtistDTO(returnArtist);
+        return artistRepository.save(returnArtist);
     }
 
-    private Album createAlbumFromReview(Review review, Artist artist) {
-        Album returnAlbum = review.getAlbum();
+    private Album createAlbumFromReview(RequestReviewDTO reviewDTO, Artist artist) {
+        Album returnAlbum = reviewDTO.albumName();
         Optional<Album> albumOptional = albumRepository.findByAlbumNameAndArtist_ArtistName(returnAlbum.getAlbumName(), artist.getArtistName());
         if (albumOptional.isPresent()) {
             return albumOptional.get();

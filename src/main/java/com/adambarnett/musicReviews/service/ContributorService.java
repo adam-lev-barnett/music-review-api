@@ -1,5 +1,6 @@
 package com.adambarnett.musicReviews.service;
 
+import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
 import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
@@ -23,17 +24,17 @@ public class ContributorService {
     private final ContributorRepository contributorRepository;
     private final ArtistRepository artistRepository;
 
-    public ResponseContributorDTO registerNewContributor(String username, String favoriteArtistName) throws ResponseStatusException {
+    public ResponseContributorDTO registerNewContributor(String username, String favoriteArtistName) throws ResponseStatusException, InvalidArgumentException {
         Optional<Contributor> contributorOptional = contributorRepository.findByUsername(username);
         if (contributorOptional.isPresent()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         Contributor newContributor = new Contributor();
         newContributor.setUsername(username);
-
         Artist favoriteArtist = getOrCreateNewArtist(favoriteArtistName);
-
         newContributor.setFavoriteArtist(favoriteArtist);
         System.out.println("Contributor successfully registered");
-        return new ResponseContributorDTO(contributorRepository.save(newContributor));
+        Contributor registeredContributor = contributorRepository.save(newContributor);
+        if (favoriteArtist != null && !favoriteArtistName.isEmpty()) favoriteArtist.addFavoritedBy(registeredContributor);
+        return new ResponseContributorDTO(registeredContributor);
     }
 
     public ResponseContributorDTO updateFavoriteArtist(String username, String favoriteArtistName) throws ResponseStatusException {

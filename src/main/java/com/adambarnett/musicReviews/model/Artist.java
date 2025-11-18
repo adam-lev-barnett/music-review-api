@@ -1,6 +1,7 @@
 package com.adambarnett.musicReviews.model;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
+import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -42,8 +43,15 @@ public class Artist {
         albums.add(album);
     }
 
-    public List<Contributor> getFavoritedBy() {
-        return Collections.unmodifiableList(favoritedBy);
+    public List<ResponseContributorDTO> getFavoritedBy() {
+        return favoritedBy.stream().map(ResponseContributorDTO::new).toList();
+    }
+
+    public void addFavoritedBy(Contributor contributor) throws InvalidArgumentException {
+        if (contributor == null) {
+            throw new InvalidArgumentException("Contributor cannot be null");
+        }
+        favoritedBy.add(contributor);
     }
 
 }

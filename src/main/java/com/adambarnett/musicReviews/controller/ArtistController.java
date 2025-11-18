@@ -1,8 +1,8 @@
 package com.adambarnett.musicReviews.controller;
 
-import com.adambarnett.musicReviews.model.Album;
-import com.adambarnett.musicReviews.model.Artist;
+import com.adambarnett.musicReviews.model.dtos.artistdata.RequestArtistDTO;
 import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
+import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
 import com.adambarnett.musicReviews.service.ArtistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,32 +17,32 @@ public class ArtistController {
     private final ArtistService artistService;
 
     @GetMapping("/name/{artistName}")
-    public Artist getArtistByName(@PathVariable String artistName) {
+    public ResponseArtistDTO getArtistByName(@PathVariable String artistName) {
         return artistService.getArtistByName(artistName);
     }
 
-    @GetMapping("/name/{artistName}/albums")
-    public List<Album> getAlbumsByArtistName(@PathVariable String artistName) {
-        return artistService.getAlbumsByArtistName(artistName);
-    }
-
     @GetMapping
-    public List<Artist> getArtists() {
+    public List<ResponseArtistDTO> getArtists() {
         return artistService.getArtists();
     }
 
-    @PostMapping
-    public ResponseArtistDTO saveArtist(@RequestBody ResponseArtistDTO responseArtistDto) {
-        return artistService.addArtist(responseArtistDto.artistName());
+    @GetMapping("/name/{artistName}/favoritedBy")
+    public List<ResponseContributorDTO> getFavoritedBy(@PathVariable String artistName) {
+        return artistService.getFavoritedBy(artistName);
     }
 
-    @PutMapping
-    public Artist updateArtist(@RequestBody Artist artist) {
-        return artistService.updateArtist(artist.getId(), artist);
+    @PostMapping
+    public ResponseArtistDTO saveArtist(@RequestBody RequestArtistDTO requestArtistDTO) {
+        return artistService.addArtist(requestArtistDTO);
+    }
+
+    @PutMapping("{id}")
+    public ResponseArtistDTO updateArtist(@PathVariable Long id, @RequestBody RequestArtistDTO artist) {
+        return artistService.updateArtist(id, artist);
     }
 
     @DeleteMapping("{id}")
-    public Artist deleteArtist(@PathVariable Long id) {
+    public ResponseArtistDTO deleteArtist(@PathVariable Long id) {
         return artistService.deleteArtist(id);
     }
 }
