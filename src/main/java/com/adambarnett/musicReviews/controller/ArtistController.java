@@ -11,36 +11,37 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("artists")
 public class ArtistController {
 
     private final ArtistService artistService;
 
-    @GetMapping("artists/{artistName}")
+    @GetMapping("/name/{artistName}")
     public Artist getArtistByName(@PathVariable String artistName) {
         return artistService.getArtistByName(artistName);
     }
 
-    @GetMapping("artists/{artistName}/albums")
+    @GetMapping("/name/{artistName}/albums")
     public List<Album> getAlbumsByArtistName(@PathVariable String artistName) {
         return artistService.getAlbumsByArtistName(artistName);
     }
 
-    @GetMapping("artists")
+    @GetMapping
     public List<Artist> getArtists() {
         return artistService.getArtists();
     }
 
-    @PostMapping("artists")
+    @PostMapping
     public ResponseArtistDTO saveArtist(@RequestBody ResponseArtistDTO responseArtistDto) {
         return artistService.addArtist(responseArtistDto.artistName());
     }
 
-    @PutMapping("artists")
+    @PutMapping
     public Artist updateArtist(@RequestBody Artist artist) {
         return artistService.updateArtist(artist.getId(), artist);
     }
 
-    @DeleteMapping("artists/{id}")
+    @DeleteMapping("{id}")
     public Artist deleteArtist(@PathVariable Long id) {
         return artistService.deleteArtist(id);
     }

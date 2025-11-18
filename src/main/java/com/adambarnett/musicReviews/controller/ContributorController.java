@@ -1,27 +1,40 @@
 package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.exception.InvalidUserException;
-import com.adambarnett.musicReviews.model.Contributor;
+import com.adambarnett.musicReviews.model.dtos.contributordata.RequestContributorDTO;
+import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
 import com.adambarnett.musicReviews.service.ContributorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("contributors")
 public class ContributorController {
 
     private final ContributorService contributorService;
 
-    @PostMapping("contributors/register/{newUser}")
-    public Contributor registerContributor(@PathVariable("newUser") String newUser) throws InvalidUserException {
-        return contributorService.registerNewContributor(newUser);
+    @GetMapping("/{username}")
+    public ResponseContributorDTO getContributorByUsername(@PathVariable String username) throws InvalidUserException {
+        return contributorService.findByUsername(username);
     }
 
+    @GetMapping("/favoriteArtist/{artistName}")
+    public List<ResponseContributorDTO> getContributorsByFavoriteArtistName(@PathVariable String artistName) throws InvalidUserException {
+        return contributorService.findByFavoriteArtist_ArtistName(artistName);
+    }
 
+    @PostMapping("/register")
+    public ResponseContributorDTO registerContributor(@RequestBody RequestContributorDTO contributorDto) throws InvalidUserException {
+        return contributorService.registerNewContributor(contributorDto.username(), contributorDto.favoriteArtistName());
+    }
+
+    @PutMapping("/{username}/favoriteArtist/{favoriteArtistName}")
+    public ResponseContributorDTO updateFavoriteArtist(@PathVariable String username, @PathVariable String favoriteArtistName) throws InvalidUserException {
+        return contributorService.updateFavoriteArtist(username, favoriteArtistName);
+    }
 
 
 }

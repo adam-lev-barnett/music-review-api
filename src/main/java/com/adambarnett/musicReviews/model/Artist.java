@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class Artist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter private long id;
+    @Getter private Long id;
 
     @NotNull
     @Column(name="ARTIST_NAME")
@@ -28,6 +29,10 @@ public class Artist {
     @JsonIgnore
     @Getter private List<Album> albums = new ArrayList<>();
 
+    @OneToMany(mappedBy = "favoriteArtist")
+    @JsonIgnore
+    private List<Contributor> favoritedBy = new ArrayList<>();
+
     //TODO add field for average score across albums
 
     public void addAlbum(Album album) throws InvalidArgumentException {
@@ -35,6 +40,10 @@ public class Artist {
             throw new InvalidArgumentException("Album cannot be null");
         }
         albums.add(album);
+    }
+
+    public List<Contributor> getFavoritedBy() {
+        return Collections.unmodifiableList(favoritedBy);
     }
 
 }

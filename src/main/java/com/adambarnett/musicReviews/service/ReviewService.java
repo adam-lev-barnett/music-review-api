@@ -5,6 +5,9 @@ import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
 import com.adambarnett.musicReviews.model.Review;
+import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
+import com.adambarnett.musicReviews.model.dtos.reviewdata.RequestReviewDTO;
+import com.adambarnett.musicReviews.model.dtos.reviewdata.ResponseReviewDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
@@ -27,23 +30,24 @@ public class ReviewService {
     private final ArtistRepository artistRepository;
     private final ContributorRepository contributorRepository;
 
-    public Review addReview(Review review) throws InvalidArgumentException {
-        if (review == null) {
+    public ResponseReviewDTO addReview(RequestReviewDTO reviewDTO) throws InvalidArgumentException {
+        if (reviewDTO == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Review is null");
         }
         Review newReview = new Review();
-        newReview.setContributor(review.getContributor());
+        Contributor contributor = contributorRepository.findByUsername(reviewDTO.userName())
+                .orElseGet(Contributor::new);
         
         // Check if we need to add a new artist to the repository
-        Artist reviewedArtist = createArtistFromReview(review);
+        Artist reviewedArtist = createArtistFromReview(reviewDTO);
         newReview.setArtist(reviewedArtist);
         
         // Check if we need to add a new album to the repository
         // Add that album to new artist list
         // Avoiding adding albumService logic 
-        Album reviewedAlbum = createAlbumFromReview(review, reviewedArtist);
+        Album reviewedAlbum = createAlbumFromReview(reviewDTO, reviewedArtist);
         newReview.setAlbum(reviewedAlbum);
-        newReview.setScore(review.getScore());
+        newReview.setScore(reviewDTO.getScore());
         return reviewRepository.save(newReview);
     }
 
@@ -91,21 +95,20 @@ public class ReviewService {
         return reviewRepository.findByScoreGreaterThan(score);
     }
 
-    public List<Review> findByScoreLessThan(Integer score) {
+    public List<ResponseReviewDTO> findByScoreLessThan(Integer score) {
+
         return reviewRepository.findByScoreLessThan(score);
     }
 
-    private Artist createArtistFromReview(Review review) {
-        Artist returnArtist = review.getArtist();
-        Optional<Artist> artistOptional = artistRepository.findByArtistName(review.getArtist().getArtistName());
-        if (!artistOptional.isPresent()) {
-            Artist newArtist = new Artist();
-            newArtist.setArtistName(returnArtist.getArtistName());
-            artistRepository.save(newArtist);
-            System.out.println("New artist was created: " + newArtist.getArtistName());
-            return newArtist;
-        }
-        return artistOptional.get();
+    private ResponseArtistDTO createArtistFromReview(String artistName) {
+        Artist returnArtist = artistRepository.findByArtistName(artistName)
+                .orElseGet(() -> {
+                    Artist newArtist = new Artist();
+                    artistRepository.save(newArtist);
+                    System.out.println("New artist was created: " + newArtist.getArtistName());
+                    return newArtist;
+                });
+        return new ResponseArtistDTO(returnArtist);
     }
 
     private Album createAlbumFromReview(Review review, Artist artist) {
@@ -121,7 +124,6 @@ public class ReviewService {
         artist.getAlbums().add(newAlbum);
         System.out.println("New album '" + newAlbum.getAlbumName() + "' was created" );
         return albumRepository.save(newAlbum);
-
     }
 
 
