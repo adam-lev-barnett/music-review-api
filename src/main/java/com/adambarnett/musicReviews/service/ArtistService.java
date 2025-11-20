@@ -83,6 +83,4 @@ public class ArtistService {
         return artistOptional;
     }
 
-
-
 }

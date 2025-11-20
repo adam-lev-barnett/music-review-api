@@ -7,7 +7,7 @@ public record ResponseReviewDTO(Long id,
                                 String albumName,
                                 Integer rating,
                                 String comments,
-                                String userName) {
+                                String username) {
 
     public ResponseReviewDTO(Review review) {
         this(

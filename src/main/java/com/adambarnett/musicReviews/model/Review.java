@@ -50,6 +50,4 @@ public class Review {
         }
         this.score = score;
     }
-
-
 }

@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record RequestReviewDTO(@NotNull String artistName,
                                @NotNull String albumName,
+                               // Need release year to create new album if album doesn't exist
+                               @NotNull Integer albumReleaseYear,
                                @NotNull Integer rating,
                                String comments,
-                               @NotNull String userName) {
+                               @NotNull String username) {
 }

@@ -17,6 +17,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByScoreGreaterThan(Integer score);
     List<Review> findByScoreLessThan(Integer score);
     List<Review> findByContributor_Username(String contributorUsername);
-
-
 }
