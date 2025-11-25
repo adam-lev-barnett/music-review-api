@@ -1,4 +1,4 @@
-package com.adambarnett.musicReviews.model.dtos.albumdata;
+package com.adambarnett.musicReviews.dtos.albumdata;
 
 import jakarta.validation.constraints.NotNull;
 

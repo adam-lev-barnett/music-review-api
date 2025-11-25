@@ -1,8 +1,8 @@
 package com.adambarnett.musicReviews.controller;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
-import com.adambarnett.musicReviews.model.dtos.albumdata.RequestAlbumDTO;
-import com.adambarnett.musicReviews.model.dtos.albumdata.ResponseAlbumDTO;
+import com.adambarnett.musicReviews.dtos.albumdata.RequestAlbumDTO;
+import com.adambarnett.musicReviews.dtos.albumdata.ResponseAlbumDTO;
 import com.adambarnett.musicReviews.service.AlbumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

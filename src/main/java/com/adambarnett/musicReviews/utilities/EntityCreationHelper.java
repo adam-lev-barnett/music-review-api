@@ -4,7 +4,7 @@ import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
-import com.adambarnett.musicReviews.model.dtos.reviewdata.RequestReviewDTO;
+import com.adambarnett.musicReviews.dtos.reviewdata.RequestReviewDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;

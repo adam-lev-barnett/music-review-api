@@ -1,7 +1,7 @@
-package com.adambarnett.musicReviews.model.dtos.artistdata;
+package com.adambarnett.musicReviews.dtos.artistdata;
 
 import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.dtos.albumdata.ResponseAlbumDTO;
+import com.adambarnett.musicReviews.dtos.albumdata.ResponseAlbumDTO;
 
 import java.util.List;
 

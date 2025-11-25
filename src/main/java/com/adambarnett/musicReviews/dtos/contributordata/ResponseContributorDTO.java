@@ -1,4 +1,4 @@
-package com.adambarnett.musicReviews.model.dtos.contributordata;
+package com.adambarnett.musicReviews.dtos.contributordata;
 
 import com.adambarnett.musicReviews.model.Contributor;
 

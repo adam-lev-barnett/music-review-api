@@ -3,8 +3,8 @@ package com.adambarnett.musicReviews.service;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.dtos.albumdata.RequestAlbumDTO;
-import com.adambarnett.musicReviews.model.dtos.albumdata.ResponseAlbumDTO;
+import com.adambarnett.musicReviews.dtos.albumdata.RequestAlbumDTO;
+import com.adambarnett.musicReviews.dtos.albumdata.ResponseAlbumDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 

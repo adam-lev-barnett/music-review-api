@@ -1,7 +1,7 @@
 package com.adambarnett.musicReviews.model;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
-import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
+import com.adambarnett.musicReviews.dtos.contributordata.ResponseContributorDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,12 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="ARTIST")
 public class Artist {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,5 +54,18 @@ public class Artist {
         }
         favoritedBy.add(contributor);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Artist artist = (Artist) o;
+        return artistName.equalsIgnoreCase(artist.artistName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(artistName);
+    }
+
 
 }

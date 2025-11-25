@@ -1,10 +1,10 @@
 package com.adambarnett.musicReviews.model;
 
+import com.adambarnett.musicReviews.enums.ContributorRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Entity
 @Table(name="CONTRIBUTORS")
@@ -21,5 +21,13 @@ public class Contributor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ARTIST_ID")
     @Getter @Setter private Artist favoriteArtist;
+
+    @Column(name="PASSWORD")
+    @NotNull
+    @Getter @Setter private String password;
+
+    @Column(name="ROLE")
+    @NotNull
+    @Getter @Setter private ContributorRole role;
 
 }

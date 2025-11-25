@@ -1,17 +1,12 @@
 package com.adambarnett.musicReviews.service;
 
-import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.Contributor;
-import com.adambarnett.musicReviews.model.dtos.albumdata.ResponseAlbumDTO;
-import com.adambarnett.musicReviews.model.dtos.artistdata.RequestArtistDTO;
-import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
-import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
+import com.adambarnett.musicReviews.dtos.artistdata.RequestArtistDTO;
+import com.adambarnett.musicReviews.dtos.artistdata.ResponseArtistDTO;
+import com.adambarnett.musicReviews.dtos.contributordata.ResponseContributorDTO;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Request;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

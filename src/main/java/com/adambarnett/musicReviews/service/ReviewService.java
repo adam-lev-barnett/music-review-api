@@ -5,8 +5,8 @@ import com.adambarnett.musicReviews.model.Album;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
 import com.adambarnett.musicReviews.model.Review;
-import com.adambarnett.musicReviews.model.dtos.reviewdata.RequestReviewDTO;
-import com.adambarnett.musicReviews.model.dtos.reviewdata.ResponseReviewDTO;
+import com.adambarnett.musicReviews.dtos.reviewdata.RequestReviewDTO;
+import com.adambarnett.musicReviews.dtos.reviewdata.ResponseReviewDTO;
 import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
@@ -49,7 +49,8 @@ public class ReviewService {
         // Avoiding adding albumService logic 
         Album reviewedAlbum = entityCreationHelper.getOrCreateAlbum(reviewDTO, reviewedArtist);
         newReview.setAlbum(reviewedAlbum);
-        newReview.setScore(reviewDTO.rating());
+        newReview.setScore(reviewDTO.score());
+        newReview.setComments(reviewDTO.comments());
         return new ResponseReviewDTO(reviewRepository.save(newReview));
     }
 

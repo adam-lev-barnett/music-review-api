@@ -1,8 +1,8 @@
 package com.adambarnett.musicReviews.controller;
 
-import com.adambarnett.musicReviews.model.dtos.artistdata.RequestArtistDTO;
-import com.adambarnett.musicReviews.model.dtos.artistdata.ResponseArtistDTO;
-import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
+import com.adambarnett.musicReviews.dtos.artistdata.RequestArtistDTO;
+import com.adambarnett.musicReviews.dtos.artistdata.ResponseArtistDTO;
+import com.adambarnett.musicReviews.dtos.contributordata.ResponseContributorDTO;
 import com.adambarnett.musicReviews.service.ArtistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,13 +1,16 @@
 package com.adambarnett.musicReviews.service;
 
+import com.adambarnett.musicReviews.dtos.auth.RegisterRequestDTO;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
-import com.adambarnett.musicReviews.model.dtos.contributordata.ResponseContributorDTO;
+import com.adambarnett.musicReviews.dtos.contributordata.RequestContributorDTO;
+import com.adambarnett.musicReviews.dtos.contributordata.ResponseContributorDTO;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,17 +26,28 @@ public class ContributorService {
 
     private final ContributorRepository contributorRepository;
     private final ArtistRepository artistRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ResponseContributorDTO registerNewContributor(String username, String favoriteArtistName) throws ResponseStatusException, InvalidArgumentException {
-        Optional<Contributor> contributorOptional = contributorRepository.findByUsername(username);
+    public ResponseContributorDTO registerNewContributor(RegisterRequestDTO requestDTO) throws ResponseStatusException, InvalidArgumentException {
+        Optional<Contributor> contributorOptional = contributorRepository.findByUsername(requestDTO.username());
         if (contributorOptional.isPresent()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         Contributor newContributor = new Contributor();
-        newContributor.setUsername(username);
-        Artist favoriteArtist = getOrCreateNewArtist(favoriteArtistName);
+        newContributor.setUsername(requestDTO.username());
+        setUserPassword(requestDTO.password(), newContributor);
+        Artist favoriteArtist = getOrCreateNewArtist(requestDTO.favoriteArtist());
         newContributor.setFavoriteArtist(favoriteArtist);
         System.out.println("Contributor successfully registered");
         Contributor registeredContributor = contributorRepository.save(newContributor);
         return new ResponseContributorDTO(registeredContributor);
+    }
+
+    // password encruption helper method for registerNewContributor()
+    private void setUserPassword(String basicPassword, Contributor contributor) {
+        if (basicPassword == null || basicPassword.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password cannot be empty");
+        }
+        String hashedPassword = passwordEncoder.encode(basicPassword);
+        contributor.setPassword(hashedPassword);
     }
 
     public ResponseContributorDTO updateFavoriteArtist(String username, String favoriteArtistName) throws ResponseStatusException {
@@ -64,7 +78,7 @@ public class ContributorService {
     }
 
     /** Returns artist from artistRepository or creates new artist to return*/
-    private Artist getOrCreateNewArtist(String favoriteArtistName) {
+    public Artist getOrCreateNewArtist(String favoriteArtistName) {
         Artist favoriteArtist = artistRepository.findByArtistName(favoriteArtistName)
                 .orElseGet( () -> {
                     Artist newArtist = new Artist();
@@ -73,6 +87,8 @@ public class ContributorService {
                 });
         return favoriteArtist;
     }
+
+
 
 
 }

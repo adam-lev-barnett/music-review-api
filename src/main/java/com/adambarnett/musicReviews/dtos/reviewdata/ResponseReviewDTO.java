@@ -1,11 +1,11 @@
-package com.adambarnett.musicReviews.model.dtos.reviewdata;
+package com.adambarnett.musicReviews.dtos.reviewdata;
 
 import com.adambarnett.musicReviews.model.Review;
 
 public record ResponseReviewDTO(Long id,
                                 String artistName,
                                 String albumName,
-                                Integer rating,
+                                Integer score,
                                 String comments,
                                 String username) {
 
