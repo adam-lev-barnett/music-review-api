@@ -1,11 +1,10 @@
 package com.adambarnett.musicReviews.config;
 
 import com.adambarnett.musicReviews.security.jwt.JwtAuthenticationFilter;
-import com.adambarnett.musicReviews.service.ContributorDetailsService;
+import com.adambarnett.musicReviews.auth.user.ContributorDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

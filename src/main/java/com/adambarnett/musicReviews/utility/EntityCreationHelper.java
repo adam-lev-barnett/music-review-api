@@ -1,13 +1,13 @@
 package com.adambarnett.musicReviews.utility;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
-import com.adambarnett.musicReviews.model.Album;
-import com.adambarnett.musicReviews.model.Artist;
-import com.adambarnett.musicReviews.model.Contributor;
-import com.adambarnett.musicReviews.dtos.reviewdata.RequestReviewDTO;
-import com.adambarnett.musicReviews.repository.AlbumRepository;
-import com.adambarnett.musicReviews.repository.ArtistRepository;
-import com.adambarnett.musicReviews.repository.ContributorRepository;
+import com.adambarnett.musicReviews.album.Album;
+import com.adambarnett.musicReviews.artist.Artist;
+import com.adambarnett.musicReviews.contributor.Contributor;
+import com.adambarnett.musicReviews.review.reviewdata.RequestReviewDTO;
+import com.adambarnett.musicReviews.album.AlbumRepository;
+import com.adambarnett.musicReviews.artist.ArtistRepository;
+import com.adambarnett.musicReviews.contributor.ContributorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

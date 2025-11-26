@@ -1,7 +1,7 @@
 package com.adambarnett.musicReviews.security.jwt;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
-import com.adambarnett.musicReviews.service.ContributorDetailsService;
+import com.adambarnett.musicReviews.auth.user.ContributorDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

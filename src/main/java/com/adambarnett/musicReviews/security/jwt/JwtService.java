@@ -1,7 +1,6 @@
 package com.adambarnett.musicReviews.security.jwt;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
