@@ -21,12 +21,14 @@ public class ArtistService {
     private final ArtistRepository artistRepository;
 
     public ResponseArtistDTO getArtistByName(String artistName) throws ResponseStatusException {
+        if (artistName == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist name is null");
         Optional<Artist> artistOptional = artistRepository.findByArtistName(artistName);
         if (!artistOptional.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found");
         return new ResponseArtistDTO(artistOptional.get());
     }
 
     public ResponseArtistDTO addArtist(RequestArtistDTO artistDTO) throws ResponseStatusException {
+        if (artistDTO == null || artistDTO.artistName().isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist name cannot be null or empty");
         Optional<Artist> artistOptional = this.artistRepository.findByArtistName(artistDTO.artistName());
         if (artistOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist already exists");
