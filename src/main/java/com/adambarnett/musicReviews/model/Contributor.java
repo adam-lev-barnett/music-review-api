@@ -27,7 +27,6 @@ public class Contributor {
     @Getter @Setter private String password;
 
     @Column(name="ROLE")
-    @NotNull
     @Getter @Setter private ContributorRole role;
 
 }

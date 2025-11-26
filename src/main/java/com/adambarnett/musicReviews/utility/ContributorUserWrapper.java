@@ -1,4 +1,4 @@
-package com.adambarnett.musicReviews.utilities;
+package com.adambarnett.musicReviews.utility;
 
 import com.adambarnett.musicReviews.model.Contributor;
 import org.springframework.security.core.GrantedAuthority;

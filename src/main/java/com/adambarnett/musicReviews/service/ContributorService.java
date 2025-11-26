@@ -1,6 +1,7 @@
 package com.adambarnett.musicReviews.service;
 
 import com.adambarnett.musicReviews.dtos.auth.RegisterRequestDTO;
+import com.adambarnett.musicReviews.enums.ContributorRole;
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Artist;
 import com.adambarnett.musicReviews.model.Contributor;
@@ -10,6 +11,7 @@ import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,12 +38,13 @@ public class ContributorService {
         setUserPassword(requestDTO.password(), newContributor);
         Artist favoriteArtist = getOrCreateNewArtist(requestDTO.favoriteArtist());
         newContributor.setFavoriteArtist(favoriteArtist);
+        newContributor.setRole(ContributorRole.ROLE_USER);
         System.out.println("Contributor successfully registered");
         Contributor registeredContributor = contributorRepository.save(newContributor);
         return new ResponseContributorDTO(registeredContributor);
     }
 
-    // password encruption helper method for registerNewContributor()
+    // password encryption helper method for registerNewContributor()
     private void setUserPassword(String basicPassword, Contributor contributor) {
         if (basicPassword == null || basicPassword.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password cannot be empty");
@@ -50,13 +53,21 @@ public class ContributorService {
         contributor.setPassword(hashedPassword);
     }
 
-    public ResponseContributorDTO updateFavoriteArtist(String username, String favoriteArtistName) throws ResponseStatusException {
+    public ResponseContributorDTO getSelf(Authentication auth) throws ResponseStatusException {
+        String username = auth.getName();
+        Contributor contributor = contributorRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contributor not found"));
+        return new ResponseContributorDTO(contributor);
+    }
+
+    public ResponseContributorDTO updateFavoriteArtist(Authentication auth, RequestContributorDTO contributorDTO) throws ResponseStatusException {
+        String username = auth.getName();
         Optional<Contributor> contributorOptional = contributorRepository.findByUsername(username);
         if (contributorOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot update contributor; contributor does not exist");
         }
         Contributor updatedContributor = contributorOptional.get();
-        updatedContributor.setFavoriteArtist(getOrCreateNewArtist(favoriteArtistName));
+        updatedContributor.setFavoriteArtist(getOrCreateNewArtist(contributorDTO.favoriteArtistName()));
         System.out.println("Contributor artist successfully updated");
         return new ResponseContributorDTO(contributorRepository.save(updatedContributor));
     }

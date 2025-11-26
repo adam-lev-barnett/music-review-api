@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -41,17 +42,20 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/contributors/register",
-                            "/login",
-                            "/albums/**",
-                            "/artists/**",
-                            "/reviews/**"
-                    ).permitAll()
-                    .anyRequest()
-                    .authenticated()
-            )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/contributors/register",
+                                "/login",
+                                "/albums/**",
+                                "/artists/**",
+                                "/reviews/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/contributors/me/**").hasRole("USER")
+                        .anyRequest().authenticated()
+                )
             .authenticationProvider(daoAuthenticationProvider())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())

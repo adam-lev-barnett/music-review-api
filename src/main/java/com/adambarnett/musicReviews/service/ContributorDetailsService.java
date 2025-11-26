@@ -1,7 +1,7 @@
 package com.adambarnett.musicReviews.service;
 
 import com.adambarnett.musicReviews.repository.ContributorRepository;
-import com.adambarnett.musicReviews.utilities.ContributorUserWrapper;
+import com.adambarnett.musicReviews.utility.ContributorUserWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

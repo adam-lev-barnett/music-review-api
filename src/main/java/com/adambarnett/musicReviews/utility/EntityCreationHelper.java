@@ -1,4 +1,4 @@
-package com.adambarnett.musicReviews.utilities;
+package com.adambarnett.musicReviews.utility;
 
 import com.adambarnett.musicReviews.exception.InvalidArgumentException;
 import com.adambarnett.musicReviews.model.Album;

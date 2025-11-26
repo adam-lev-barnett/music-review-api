@@ -11,7 +11,7 @@ import com.adambarnett.musicReviews.repository.AlbumRepository;
 import com.adambarnett.musicReviews.repository.ArtistRepository;
 import com.adambarnett.musicReviews.repository.ContributorRepository;
 import com.adambarnett.musicReviews.repository.ReviewRepository;
-import com.adambarnett.musicReviews.utilities.EntityCreationHelper;
+import com.adambarnett.musicReviews.utility.EntityCreationHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;

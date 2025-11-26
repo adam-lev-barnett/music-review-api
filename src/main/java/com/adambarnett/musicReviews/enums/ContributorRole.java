@@ -1,5 +1,5 @@
 package com.adambarnett.musicReviews.enums;
 
 public enum ContributorRole {
-    ADMIN, USER
+    ROLE_ADMIN, ROLE_USER
 }
