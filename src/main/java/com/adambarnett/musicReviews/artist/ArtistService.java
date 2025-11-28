@@ -2,7 +2,6 @@ package com.adambarnett.musicReviews.artist;
 
 import com.adambarnett.musicReviews.artist.artistdata.RequestArtistDTO;
 import com.adambarnett.musicReviews.artist.artistdata.ResponseArtistDTO;
-import com.adambarnett.musicReviews.contributor.contributordata.ResponseContributorDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -61,12 +60,6 @@ public class ArtistService {
             responseArtistDTOList.add(new ResponseArtistDTO(artist));
         }
         return responseArtistDTOList;
-    }
-
-    public List<ResponseContributorDTO> getFavoritedBy(String artistName) {
-        Artist favoritedArtist =  artistRepository.findByArtistName(artistName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
-        return favoritedArtist.getFavoritedBy();
     }
 
     // Simplifies repetitive lookups

@@ -7,12 +7,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,7 +27,7 @@ public class ArtistServiceTest {
     @InjectMocks
     private ArtistService artistService;
 
-    //~~~~~~~getArtistByName() tests~~~~~~~~~~~
+    //~~~~~~~ getArtistByName() tests~~~~~~~~~~~
     @Test
     void testGetExistingArtistByName() {
         Artist testArtist = new Artist();
@@ -50,9 +53,9 @@ public class ArtistServiceTest {
         assertThrows(ResponseStatusException.class, () -> artistService.getArtistByName(null));
     }
 
-    //~~~~~~~addArtist() tests~~~~~~~~~~~
+    //~~~~~~~ addArtist() tests~~~~~~~~~~~
     @Test
-    void testAddNewArtistSavedInRepository() {
+    void testAddNewArtistSavesInRepository() {
 
         Artist testArtist2 = new Artist();
         testArtist2.setArtistName("Test Artist");
@@ -89,5 +92,74 @@ public class ArtistServiceTest {
     @Test
     void testAddEmptyStringArtistThrows() {
         assertThrows(ResponseStatusException.class, () -> artistService.addArtist(new RequestArtistDTO("")));
+    }
+
+    //~~~~~~~ updateArtist() tests~~~~~~~~~~~
+
+    @Test
+    void testUpdateExistingArtistSucceeds() {
+        Artist testArtist = new Artist();
+        testArtist.setArtistName("Test Artist");
+
+        // Pretend testArtist is already saved in the database
+
+        // Allows for first argument of updateArtist (id field) because id isn't generated with stub
+        when(artistRepository.findById(1L))
+            .thenReturn(Optional.of(testArtist));
+
+        // Ensures an artist is returned so it can be updated with updateArtist
+        when(artistRepository.save(testArtist))
+            .thenReturn(testArtist);
+
+        RequestArtistDTO requestDTO = new RequestArtistDTO("Test Artist 2");
+        ResponseArtistDTO resultResponseDTO = artistService.updateArtist(1L, requestDTO);
+
+        assertEquals("Test Artist 2", resultResponseDTO.artistName());
+    }
+
+    @Test
+    void testUpdateNonExistingArtistThrowsNotException() {
+        assertThrows(ResponseStatusException.class, () -> artistService.updateArtist(1L, new RequestArtistDTO("")));
+    }
+
+    //~~~~~~~ GetArtistsBy... tests~~~~~~~~~~~
+
+    @Test
+    void getAllArtistsReturnsAllArtists() {
+
+        // Populate repository with artists
+        Artist testArtist1 = new Artist();
+        Artist testArtist2 = new Artist();
+        testArtist1.setArtistName("Test Artist 1");
+        testArtist2.setArtistName("Test Artist 2");
+
+        // Ensure that service correctly calls the mock repository
+        when(artistRepository.findAll(Sort.by(Sort.Direction.ASC, "artistName"))).thenReturn(List.of(testArtist1, testArtist2));
+
+        // Populate artistName array for comparison of getArtists() list
+        String[] nameList1 = {testArtist1.getArtistName(),  testArtist2.getArtistName()};
+
+        List<ResponseArtistDTO> artistList = artistService.getArtists();
+
+        String[] nameList2 = {artistList.get(0).artistName(), artistList.get(1).artistName()};
+
+        assertArrayEquals(nameList1, nameList2);
+    }
+
+    //~~~~~~~ GetArtistsBy... tests~~~~~~~~~~~
+
+    @Test
+    void deleteExistingArtistSucceeds() {
+        Artist testArtist = new Artist();
+        testArtist.setArtistName("Test Artist");
+
+        when(artistRepository.findById(1L))
+                .thenReturn(Optional.of(testArtist));
+
+        assertDoesNotThrow(() -> artistService.deleteArtist(1L));
+
+        // Verify service calls repository methods correctly
+        verify(artistRepository).findById(1L);
+        verify(artistRepository).delete(testArtist);
     }
 }

@@ -25,11 +25,6 @@ public class ArtistController {
         return artistService.getArtists();
     }
 
-    @GetMapping("/name/{artistName}/favoritedBy")
-    public List<ResponseContributorDTO> getFavoritedBy(@PathVariable String artistName) {
-        return artistService.getFavoritedBy(artistName);
-    }
-
     @PostMapping
     public ResponseArtistDTO saveArtist(@RequestBody RequestArtistDTO requestArtistDTO) {
         return artistService.addArtist(requestArtistDTO);
