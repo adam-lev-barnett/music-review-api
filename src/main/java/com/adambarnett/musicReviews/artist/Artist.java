@@ -32,10 +32,6 @@ public class Artist {
     @JsonIgnore
     @Getter private List<Album> albums = new ArrayList<>();
 
-    @OneToMany(mappedBy = "favoriteArtist")
-    @JsonIgnore
-    private List<Contributor> favoritedBy = new ArrayList<>();
-
     //TODO add field for average score across albums
 
     public void addAlbum(Album album) throws InvalidArgumentException {
@@ -45,27 +41,17 @@ public class Artist {
         albums.add(album);
     }
 
-    public List<ResponseContributorDTO> getFavoritedBy() {
-        return favoritedBy.stream().map(ResponseContributorDTO::new).toList();
-    }
-
-    public void addFavoritedBy(Contributor contributor) throws InvalidArgumentException {
-        if (contributor == null) {
-            throw new InvalidArgumentException("Contributor cannot be null");
-        }
-        favoritedBy.add(contributor);
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Artist artist = (Artist) o;
-        return artistName.equalsIgnoreCase(artist.artistName);
+        if (this == o) return true;
+        if (!(o instanceof Artist artist)) return false;
+        if (artistName == null || artist.getArtistName() == null) return false;
+        return artistName.equalsIgnoreCase(artist.getArtistName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(artistName);
+        return Objects.hashCode(artistName.toLowerCase());
     }
 
 

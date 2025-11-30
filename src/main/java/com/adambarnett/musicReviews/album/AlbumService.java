@@ -26,6 +26,8 @@ public class AlbumService {
     // If artist doesn't exist, add it to the artist repository
     public ResponseAlbumDTO addAlbum(RequestAlbumDTO newAlbum) throws InvalidArgumentException {
         //TODO avoid duplicates and ignore case
+        if (newAlbum == null) throw new InvalidArgumentException("Album cannot be null");
+        if (newAlbum.releaseYear() == null || newAlbum.releaseYear() < 0) throw new InvalidArgumentException("ReleaseYear must be greater than 0");
         String artistName = newAlbum.artistName();
         Artist artist = artistRepository.findByArtistName(artistName)
                 .orElseGet(() -> {

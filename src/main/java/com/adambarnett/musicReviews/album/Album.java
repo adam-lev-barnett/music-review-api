@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name="ALBUM")
 public class Album {
@@ -32,5 +34,19 @@ public class Album {
     @Override
     public String toString() {
         return String.format("Album: %s\nRelease year: %d\n", albumName, releaseYear);
+    }
+
+    // Album name case shouldn't matter -- Already handled in artist's equals
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Album album = (Album) o;
+        return  Objects.equals(albumName.toLowerCase(), album.albumName.toLowerCase()) && Objects.equals(releaseYear, album.releaseYear) && album.artist.equals(artist);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(albumName.toLowerCase(), releaseYear, artist);
     }
 }

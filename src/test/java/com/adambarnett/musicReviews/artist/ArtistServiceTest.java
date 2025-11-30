@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,14 +61,13 @@ public class ArtistServiceTest {
         Artist testArtist2 = new Artist();
         testArtist2.setArtistName("Test Artist");
 
-        RequestArtistDTO requestDTO = new RequestArtistDTO("Test Artist");
-        artistService.addArtist(requestDTO);
+        RequestArtistDTO requestArtistDTO = new RequestArtistDTO("Test Artist");
 
-        when(artistRepository.findByArtistName("Test Artist"))
-                .thenReturn(Optional.of(testArtist2));
+        when(artistRepository.save(any(Artist.class)))
+                .thenReturn(testArtist2);
 
-        ResponseArtistDTO responseArtistDTO = artistService.getArtistByName("Test Artist");
-        assertEquals("Test Artist",  responseArtistDTO.artistName());
+        ResponseArtistDTO responseArtistDTO = artistService.addArtist(requestArtistDTO);
+        assertEquals(requestArtistDTO.artistName(),  responseArtistDTO.artistName());
     }
 
     @Test
@@ -76,8 +76,8 @@ public class ArtistServiceTest {
         testArtist.setArtistName("Test Artist");
 
         RequestArtistDTO requestDTO = new RequestArtistDTO("Test Artist");
-        artistService.addArtist(requestDTO);
 
+        // Technically can't save artist, so saving "existing artist" can be omitted
         when(artistRepository.findByArtistName("Test Artist"))
                 .thenReturn(Optional.of(testArtist));
 
@@ -112,9 +112,12 @@ public class ArtistServiceTest {
             .thenReturn(testArtist);
 
         RequestArtistDTO requestDTO = new RequestArtistDTO("Test Artist 2");
-        ResponseArtistDTO resultResponseDTO = artistService.updateArtist(1L, requestDTO);
 
-        assertEquals("Test Artist 2", resultResponseDTO.artistName());
+        // Should return the actual testArtist and modify it based on the RequestDTO
+        artistService.updateArtist(1L, requestDTO);
+
+        // Directly compare to the artist itself for direct testing of update
+        assertEquals("Test Artist 2", testArtist.getArtistName());
     }
 
     @Test
@@ -125,7 +128,7 @@ public class ArtistServiceTest {
     //~~~~~~~ GetArtistsBy... tests~~~~~~~~~~~
 
     @Test
-    void getAllArtistsReturnsAllArtists() {
+    void testGetAllArtistsReturnsAllArtists() {
 
         // Populate repository with artists
         Artist testArtist1 = new Artist();
@@ -149,7 +152,7 @@ public class ArtistServiceTest {
     //~~~~~~~ GetArtistsBy... tests~~~~~~~~~~~
 
     @Test
-    void deleteExistingArtistSucceeds() {
+    void testDeleteExistingArtistSucceeds() {
         Artist testArtist = new Artist();
         testArtist.setArtistName("Test Artist");
 
