@@ -9,7 +9,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByArtist_ArtistName(String artistName);
-    List<Review> findByAlbum_AlbumName(String albumName);
     List<Review> findByArtist_ArtistNameAndAlbum_AlbumName(String artistName, String albumName);
 
     List<Review> findByScore(Integer score);

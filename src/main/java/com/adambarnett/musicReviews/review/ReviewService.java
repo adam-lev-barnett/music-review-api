@@ -76,20 +76,13 @@ public class ReviewService {
         return createReviewDTOList(reviewList);
     }
 
-    public List<ResponseReviewDTO> findByAlbumName(String albumName) {
-        Album album = albumRepository.findByAlbumName(albumName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found"));
-        List<Review> reviewList = reviewRepository.findByAlbum_AlbumName(album.getAlbumName());
-        return createReviewDTOList(reviewList);
-    }
-
     // If someone is looking for a specific album; can't just be by album name because multiple albums can be named the same thing
     public List<ResponseReviewDTO> findByArtistNameAndAlbumName(String artistName, String albumName) {
         Artist artist = artistRepository.findByArtistName(artistName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist not found"));
-        Album album = albumRepository.findByAlbumName(albumName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found"));
-        List<Review> reviewList = reviewRepository.findByArtist_ArtistNameAndAlbum_AlbumName(artist.getArtistName(), album.getAlbumName());
+        List<Album> album = albumRepository.findByAlbumName(albumName);
+        if (album.isEmpty()) throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Album not found");
+        List<Review> reviewList = reviewRepository.findByArtist_ArtistNameAndAlbum_AlbumName(artist.getArtistName(), albumName);
         return createReviewDTOList(reviewList);
     }
 

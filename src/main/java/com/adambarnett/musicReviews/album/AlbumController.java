@@ -36,8 +36,8 @@ public class AlbumController {
     }
 
     @GetMapping("/name/{albumName}")
-    public ResponseAlbumDTO getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
-        return albumService.getAlbumByAlbumName(albumName);
+    public List<ResponseAlbumDTO> getAlbumByAlbumName(@PathVariable("albumName") String albumName) {
+        return albumService.getAlbumsByAlbumName(albumName);
     }
 
     @PostMapping

@@ -25,13 +25,8 @@ public class ReviewController {
         return reviewService.findByArtistName(artistName);
     }
 
-    @GetMapping("/album/{albumName}")
-    public List<ResponseReviewDTO> getReviewsByAlbumName(@PathVariable("albumName") String albumName) {
-        return reviewService.findByAlbumName(albumName);
-    }
-
     @GetMapping("/artist/{artistName}/album/{albumName}")
-    public List<ResponseReviewDTO> getReviewsByAlbum(@PathVariable("artistName") String artist, @PathVariable("albumName") String album) {
+    public List<ResponseReviewDTO> getReviewsByArtistAndAlbum(@PathVariable("artistName") String artist, @PathVariable("albumName") String album) {
         return  reviewService.findByArtistNameAndAlbumName(artist, album);
     }
 

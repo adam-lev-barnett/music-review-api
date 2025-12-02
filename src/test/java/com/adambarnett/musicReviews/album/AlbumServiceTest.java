@@ -13,11 +13,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -159,26 +160,128 @@ public class AlbumServiceTest {
     }
 
     @Test
-    void deleteAlbum() {
+    void testDeleteAlbumSucceeds() {
+
+        when(this.albumRepository.findById(1L)).thenReturn(Optional.of(testAlbum));
+
+        assertDoesNotThrow(() -> albumService.deleteAlbum(1L));
+
+        verify(albumRepository).delete(testAlbum);
     }
 
     @Test
-    void findByArtistName() {
+    void testFindByArtistNameSucceeds() {
+
+        // Instantiate new album with existing artist
+        Album testAlbum2 = new Album();
+        testAlbum2.setAlbumName("Test Album 2");
+        testAlbum2.setArtist(testArtist);
+        testAlbum2.setReleaseYear(2002);
+
+        when(artistRepository.findByArtistName(testArtist.getArtistName()))
+                .thenReturn(Optional.of(testArtist));
+
+        when(albumRepository.findByArtist_ArtistName(testArtist.getArtistName()))
+                .thenReturn(List.of(testAlbum2, testAlbum));
+
+        List<ResponseAlbumDTO> responseAlbumDTOs = albumService.findByArtistName(testArtist.getArtistName());
+
+        assertEquals(responseAlbumDTOs.get(0).albumName(), testAlbum.getAlbumName());
+        assertEquals(responseAlbumDTOs.get(1).albumName(), testAlbum2.getAlbumName());
+
+        assertEquals(responseAlbumDTOs.get(0).artistName(), testAlbum.getArtist().getArtistName());
+        assertEquals(responseAlbumDTOs.get(1).artistName(), testAlbum2.getArtist().getArtistName());
+
+        // Ensure the artist names are the same between them
+        assertEquals(responseAlbumDTOs.get(0).artistName(), responseAlbumDTOs.get(1).artistName());
+
+        assertEquals(responseAlbumDTOs.get(0).releaseYear(), testAlbum.getReleaseYear());
+        assertEquals(responseAlbumDTOs.get(1).releaseYear(), testAlbum2.getReleaseYear());
     }
 
     @Test
-    void findByAlbumNameAndArtistName() {
+    void testFindByArtistNameThrowsExceptionWhenNotFound() {
+        when(this.artistRepository.findByArtistName(testArtist.getArtistName()))
+            .thenReturn(Optional.empty());
+        assertThrows(ResponseStatusException.class, () -> albumService.findByArtistName(testArtist.getArtistName()));
     }
 
     @Test
-    void findByReleaseYear() {
+    void testFindByArtistNameThrowsExceptionWhenFieldEmpty() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByArtistName(""));
     }
 
     @Test
-    void sortAll() {
+    void testFindByArtistNameThrowsExceptionWhenFieldNull() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByArtistName(null));
     }
 
     @Test
-    void getAlbumByAlbumName() {
+    void testFindByAlbumNameAndArtistNameSucceeds() {
+        when(this.artistRepository.findByArtistName(testArtist.getArtistName()))
+                .thenReturn(Optional.of(testArtist));
+
+        when(this.albumRepository.findByAlbumNameAndArtist_ArtistName(testAlbum.getAlbumName(), testArtist.getArtistName()))
+                .thenReturn(Optional.of(testAlbum));
+
+        ResponseAlbumDTO responseAlbumDTO = albumService.findByAlbumNameAndArtistName(testAlbum.getAlbumName(), testArtist.getArtistName());
+
+        assertEquals(testAlbum.getAlbumName(), responseAlbumDTO.albumName());
+        assertEquals(testAlbum.getArtist().getArtistName(), responseAlbumDTO.artistName());
+        assertEquals(testAlbum.getReleaseYear(), responseAlbumDTO.releaseYear());
+    }
+
+    @Test
+    void testFindByNonexistentArtistAndAlbumNameThrowsException() {
+        when(this.artistRepository.findByArtistName(testArtist.getArtistName()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName(testAlbum.getAlbumName(), testArtist.getArtistName()));
+    }
+
+    @Test
+    void testFindByNonexistentAlbumButExistingArtistThrowsException() {
+
+        // Artist is found
+        when(this.artistRepository.findByArtistName(testArtist.getArtistName()))
+                .thenReturn(Optional.of(testArtist));
+
+        // Album doesn't exist
+        when(this.albumRepository.findByAlbumNameAndArtist_ArtistName(testAlbum.getAlbumName(), testArtist.getArtistName()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName(testAlbum.getAlbumName(), testArtist.getArtistName()));
+    }
+
+    @Test
+    void testFindByNullArtistNameAndFilledAlbumNameThrowsException() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName(null, testAlbum.getAlbumName()));
+    }
+
+    @Test
+    void testFindByEmptyArtistNameAndFilledAlbumNameThrowsException() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName("", testAlbum.getAlbumName()));
+    }
+
+    @Test
+    void testFindByFilledArtistNameAndNullAlbumNameThrowsException() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName(testArtist.getArtistName(), null));
+    }
+
+    @Test
+    void testFindByFilledArtistNameAndEmptyAlbumNameThrowsException() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByAlbumNameAndArtistName(testArtist.getArtistName(), ""));
+    }
+
+    @Test
+    void testFindByReleaseYear() {
+    }
+
+    @Test
+    void testSortAll() {
+    }
+
+    @Test
+    void testGetAlbumsByAlbumName() {
     }
 }

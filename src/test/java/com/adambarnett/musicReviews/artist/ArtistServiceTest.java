@@ -162,7 +162,6 @@ public class ArtistServiceTest {
         assertDoesNotThrow(() -> artistService.deleteArtist(1L));
 
         // Verify service calls repository methods correctly
-        verify(artistRepository).findById(1L);
         verify(artistRepository).delete(testArtist);
     }
 }

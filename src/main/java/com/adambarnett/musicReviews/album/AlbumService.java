@@ -12,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -82,16 +80,29 @@ public class AlbumService {
     }
 
     public List<ResponseAlbumDTO> findByArtistName(String artistName) {
+
+        if (artistName == null || artistName.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist name cannot be null or empty");
+
+        Artist artist = artistRepository.findByArtistName(artistName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist with name " + artistName));
+
         List<ResponseAlbumDTO> albumDtos = new ArrayList<>();
-        for (Album album : albumRepository.findByArtist_ArtistName(artistName)) {
+        for (Album album : albumRepository.findByArtist_ArtistName(artist.getArtistName())) {
             albumDtos.add(new ResponseAlbumDTO(album));
         }
+        albumDtos.sort(Comparator.comparingInt(ResponseAlbumDTO::releaseYear));
         return albumDtos;
     }
 
     public ResponseAlbumDTO findByAlbumNameAndArtistName(String albumName, String artistName) {
-        return new ResponseAlbumDTO(albumRepository.findByAlbumNameAndArtist_ArtistName(albumName, artistName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist and album: " + artistName + " and " + albumName)));
+        if (artistName == null || artistName.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist name cannot be null or empty");
+        if (albumName == null || albumName.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Album name cannot be null or empty");
+
+        Artist artist = artistRepository.findByArtistName(artistName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist with name " + artistName));
+
+        return new ResponseAlbumDTO(albumRepository.findByAlbumNameAndArtist_ArtistName(albumName, artist.getArtistName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find artist and album: " + artist.getArtistName() + " and " + albumName)));
     }
 
     public List<ResponseAlbumDTO> findByReleaseYear(Integer releaseYear) {
@@ -115,9 +126,15 @@ public class AlbumService {
         }
     }
 
-    public ResponseAlbumDTO getAlbumByAlbumName(String albumName) {
-        return new ResponseAlbumDTO(albumRepository.findByAlbumName(albumName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find album with name: " + albumName)));
+    public List<ResponseAlbumDTO> getAlbumsByAlbumName(String albumName) {
+
+        List<ResponseAlbumDTO> albumDtos = new ArrayList<>();
+        for (Album album : albumRepository.findByAlbumName(albumName)) {
+            albumDtos.add(new ResponseAlbumDTO(album));
+        }
+        albumDtos.sort(Comparator.comparing(ResponseAlbumDTO::artistName));
+        return albumDtos;
+
     }
 
     private List<ResponseAlbumDTO> convertToResponseAlbumDTOList(List<Album> albums) {

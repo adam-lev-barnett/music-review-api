@@ -13,7 +13,7 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     List<Album> findByReleaseYear(Integer releaseYear);
 
-    Optional<Album> findByAlbumName(String albumName);
+    List<Album> findByAlbumName(String albumName);
 
     Optional<Album> findByAlbumNameAndArtist_ArtistName(String albumName, String artistName);
 
