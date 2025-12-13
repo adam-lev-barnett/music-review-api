@@ -30,6 +30,8 @@ public class Album {
     @Getter @Setter private Integer releaseYear;
 
     //TODO add field for average album score over reviews
+        // Do not include field for reviews because it would overwhelm the column
+        // Instead, search the review repository by album name and average the scores
 
     @Override
     public String toString() {

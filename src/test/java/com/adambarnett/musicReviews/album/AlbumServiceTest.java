@@ -274,7 +274,49 @@ public class AlbumServiceTest {
     }
 
     @Test
-    void testFindByReleaseYear() {
+    void testFindByListedReleaseYearReturnsAllCorrectAlbums() {
+
+        Artist testArtist2 = new Artist();
+        testArtist2.setArtistName("Test artist 2");
+
+        Album testAlbumSameYear = new Album();
+        testAlbumSameYear.setArtist(testArtist2);
+        testAlbumSameYear.setAlbumName("Another 1999 album");
+        testAlbumSameYear.setReleaseYear(testAlbum.getReleaseYear());
+
+        Album shouldNotBeIncluded = new Album();
+        shouldNotBeIncluded.setArtist(testArtist2);
+        shouldNotBeIncluded.setAlbumName("Album from a different year");
+        shouldNotBeIncluded.setReleaseYear(testAlbum.getReleaseYear());
+
+        when(this.albumRepository.findByReleaseYear(1999))
+                .thenReturn(List.of(testAlbum, testAlbumSameYear));
+
+        List<ResponseAlbumDTO> albumsFromSameReleaseYear = albumService.findByReleaseYear(1999);
+
+        // Ensures the album from a different year isn't included
+        assertEquals(2, albumsFromSameReleaseYear.size());
+
+        assertEquals(albumsFromSameReleaseYear.get(0).artistName(), testAlbum.getArtist().getArtistName());
+        assertEquals(albumsFromSameReleaseYear.get(0).albumName(), testAlbum.getAlbumName());
+        assertEquals(albumsFromSameReleaseYear.get(0).releaseYear(), testAlbum.getReleaseYear());
+
+        assertEquals(albumsFromSameReleaseYear.get(1).artistName(), testAlbumSameYear.getArtist().getArtistName());
+        assertEquals(albumsFromSameReleaseYear.get(1).albumName(), testAlbumSameYear.getAlbumName());
+        assertEquals(albumsFromSameReleaseYear.get(1).releaseYear(), testAlbumSameYear.getReleaseYear());
+    }
+
+    @Test
+    void testFindByUnlistedReleaseYearReturnsEmptyList() {
+        when(this.albumRepository.findByReleaseYear(500))
+                .thenReturn(List.of());
+
+        assertTrue(albumService.findByReleaseYear(500).isEmpty());
+    }
+
+    @Test
+    void testFindByNegativeReleaseYearThrowsException() {
+        assertThrows(ResponseStatusException.class, () -> albumService.findByReleaseYear(-500));
     }
 
     @Test

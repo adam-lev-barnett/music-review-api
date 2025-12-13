@@ -107,11 +107,16 @@ public class AlbumService {
 
     public List<ResponseAlbumDTO> findByReleaseYear(Integer releaseYear) {
 
+        if (releaseYear < 0) throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "ReleaseYear cannot be less than 0");
         List<Album> albumsByYear = albumRepository.findByReleaseYear(releaseYear);
         if (albumsByYear.isEmpty()) {
             System.err.println("No albums found for given year.");
         }
-        return convertToResponseAlbumDTOList(albumsByYear);
+
+        List<ResponseAlbumDTO> responseAlbumDTOs = convertToResponseAlbumDTOList(albumsByYear);
+        responseAlbumDTOs.sort(Comparator.comparing(ResponseAlbumDTO::artistName));
+
+        return responseAlbumDTOs;
     }
 
     public List<ResponseAlbumDTO> sortAll(String sort) {
