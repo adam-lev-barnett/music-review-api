@@ -40,6 +40,7 @@ public class EntityCreationHelper {
                 });
     }
 
+    /** Checks if album exists, updates artist average score, and returns the album if found. Creates and returns new album if not.*/
     public Album getOrCreateAlbum(RequestReviewDTO reviewDTO, Artist artist) throws InvalidArgumentException {
         Optional<Album> albumOptional = albumRepository.findByAlbumNameAndArtist_ArtistName(reviewDTO.albumName(), artist.getArtistName());
         if (albumOptional.isPresent()) {
@@ -49,10 +50,17 @@ public class EntityCreationHelper {
         newAlbum.setAlbumName(reviewDTO.albumName());
         newAlbum.setArtist(artist);
         newAlbum.setReleaseYear(reviewDTO.albumReleaseYear());
+        // Updates album score with an initial review count of 1 and its first review score;
+        // average will continue to calculate upon more review submissions for the album
+        newAlbum.getReviewNumberAndCount()[0] = 1;
+        newAlbum.getReviewNumberAndCount()[1] = reviewDTO.score();
+
+        // Ensure artist knows about the albums it owns
         artist.addAlbum(newAlbum);
         System.out.println("New album '" + newAlbum.getAlbumName() + "' was created" );
         return albumRepository.save(newAlbum);
     }
+
 
 
 }

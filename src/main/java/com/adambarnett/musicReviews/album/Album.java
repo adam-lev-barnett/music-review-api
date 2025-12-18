@@ -29,9 +29,29 @@ public class Album {
     @Column(name="RELEASE_YEAR")
     @Getter @Setter private Integer releaseYear;
 
+    /** Pair used to calculate average score using calculateAverageScore() method. [0] is number of reviews; [1] is total score.
+     * Getter mainly for updating the array with its first review/score */
+    @Getter private int[] reviewNumberAndCount = {0, 0};
+
+    @Column(name="AVERAGE_SCORE")
+    @Getter private Integer averageScore = 0;
+
+
     //TODO add field for average album score over reviews
         // Do not include field for reviews because it would overwhelm the column
         // Instead, search the review repository by album name and average the scores
+
+
+    public void updateReviewNumberAndCount(int newScore) {
+        reviewNumberAndCount[0]++;
+        reviewNumberAndCount[1] += newScore;
+        this.updateAverageScore();
+    }
+
+    private void updateAverageScore() {
+        this.averageScore = reviewNumberAndCount[1] / reviewNumberAndCount[0];
+    }
+
 
     @Override
     public String toString() {

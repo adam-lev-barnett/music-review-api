@@ -48,7 +48,7 @@ public class Review {
     @Getter @Setter private ReviewStatus reviewStatus;
 
     public void setScore(Integer score) throws InvalidArgumentException {
-        if (score <= 0 || score > 100) {
+        if (score < 0 || score > 100) {
             throw new InvalidArgumentException("Score must be between 0 and 100");
         }
         this.score = score;

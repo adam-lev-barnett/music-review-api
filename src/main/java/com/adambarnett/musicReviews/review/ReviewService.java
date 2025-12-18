@@ -49,6 +49,8 @@ public class ReviewService {
         newReview.setAlbum(reviewedAlbum);
         newReview.setScore(reviewDTO.score());
         newReview.setComments(reviewDTO.comments());
+
+        updateAverageArtistAndAlbumScores(reviewedArtist, reviewedAlbum, reviewDTO.score());
         return new ResponseReviewDTO(reviewRepository.save(newReview));
     }
 
@@ -106,6 +108,12 @@ public class ReviewService {
             responseReviewDTOList.add(new ResponseReviewDTO(review));
         }
         return responseReviewDTOList;
+    }
+
+    /** Need to update average scores for album and artist upon new review submission*/
+    private static void updateAverageArtistAndAlbumScores(Artist artist, Album album, Integer score) {
+        album.updateReviewNumberAndCount(score);
+        artist.updateAverageAlbumScore();
     }
 
 }

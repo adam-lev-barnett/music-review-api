@@ -28,11 +28,14 @@ public class Artist {
     @Getter @Setter(AccessLevel.PUBLIC) private String artistName;
 
     // Mapped by "artist" versus "artistName" because album refers to the artist object as a whole
+    // Artist and all associated entities removed upon artist removal from database
     @OneToMany(mappedBy = "artist", cascade = CascadeType.REMOVE)
     @JsonIgnore
     @Getter private List<Album> albums = new ArrayList<>();
 
     //TODO add field for average score across albums
+    @Column(name="AVERAGE_ALBUM_SCORE")
+    @Getter private Integer averageAlbumScore = 0;
 
     public void addAlbum(Album album) throws InvalidArgumentException {
         if (album == null) {
@@ -40,6 +43,15 @@ public class Artist {
         }
         albums.add(album);
     }
+
+    public void updateAverageAlbumScore() {
+        int totalScore = 0;
+        for (Album album : albums) {
+            totalScore += album.getAverageScore();
+        }
+        this.averageAlbumScore = totalScore / albums.size();
+    }
+
 
     @Override
     public boolean equals(Object o) {
